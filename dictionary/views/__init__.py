@@ -42,10 +42,9 @@ def word_view(request):
     data = json.loads(req)
 
     page = PageView(data['word'])
-    word_section = SectionView('%s' % data['word'])
+    word_section = SectionView(f'{data["word"]} ({data["language"]})' )
     page.add_section(word_section)
     pos_section = SectionView('%s' % data['part_of_speech'])
-    word_section.add_view(SectionView('%s' % data['language']))
     word_section.add_view(pos_section)
 
     definitions_list_view = TableView()
@@ -55,6 +54,15 @@ def word_view(request):
     definitions_list_view.add_column(TableColumnView('#', 'id'))
     definitions_list_view.add_column(LanguageColumnView('Language', 'language'))
     definitions_list_view.add_column(TableColumnView('Definition', 'definition'))
+
+    delete_column = ActionColumnView('Edit', 'edit')
+    delete_column.set_link_pattern("#edit")
+    definitions_list_view.add_column(delete_column)
+
+    edit_column = ActionColumnView('Delete', 'delete')
+    edit_column.set_link_pattern("#delete")
+    definitions_list_view.add_column(edit_column)
+
 
 
     return HttpResponse(page.render())
