@@ -1,0 +1,20 @@
+<form action="{{ form.handler_route }}/" method="post">
+    <table>
+        <tr>
+            <td>{{ form.first_name.label }}</td>
+            <td>{{ form.first_name() }}</td>
+        <tr>
+            <td>{{ form.last_name.label }}</td>
+            <td>{{ form.last_name() }}</td>
+        <tr>
+            <td>{{ form.email.label }}</td>
+            <td>{{ form.email() }}</td>
+        <tr>
+            <td>{{ form.password.label }}</td>
+            <td>{{ form.password() }}</td>
+        <tr>
+            <td>{{ form.submit.label }}</td>
+            <td>{{ form.submit() }}</td>
+        </tr>
+    </table>
+</form>
