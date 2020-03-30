@@ -25,11 +25,11 @@
         </thead>
         <tr v-for="word in words">      
             <td>{{word.id}}</td>
-            <td>{{word.word}}</td>
+            <td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
             <td>{{word.part_of_speech}}</td>
             <td>{{word.language}}</td>
             <td>            
-              <button type="button" v-on:click='deleteWord(word)'>delete</button>
+              <button type="button" v-on:click='deleteWord(word)'>dissociate</button>
             </td>
         </tr>         
       </table>
