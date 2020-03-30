@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head profile="http://gmpg.org/xfn/11">
+    <title>Botjagwar</title>
+    <meta content="">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+    <style>
+    </style>
+    <script type="text/javascript" src='vue.js'></script>
+  	<!--<script type="text/javascript" src='axios.js'></script>-->  	
+  </head>
+  <body>
+	<div class="mr-md-3" id='app'>      
+    	<h1>{{word.word}}</h1>
+      <h2>{{word.language}}</h2>
+      <h3>{{word.part_of_speech}}</h3>      
+      <table class='table table-sm table-bordered'>
+        <thead>
+          <th>ID</th>
+          <th>definition</th>
+          <th>language</th>
+          <th>actions</th>
+        </thead>
+        <tr v-for="definition in word.definitions">      
+            <td>{{definition.id}}</td>
+            <td>
+                <a v-bind:href="'/definition.html?defid=' + definition.id">
+                {{definition.definition}}
+                </a>
+            </td>
+            <td>({{definition.language}})</td>
+            <td>            
+              <button type="button" v-on:click='deleteDefinition(definition)'>delete</button>
+            </td>
+        </tr>
+        <hr>
+        <tr>
+          <td></td>
+          <td>
+             <input v-model="new_definition.definition" @keyup.enter='addDefinition' placeholder="add definition">
+          </td>
+          <td>
+            <input v-model="new_definition.language" @keyup.enter='addDefinition' placeholder="set language" value="mg">
+              <button type="button" v-on:click='addDefinition'>add</button>
+          </td> 
+        </tr>
+      </table>
+
+      <button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>(new_
+      definitions: {{new_definitions.length}}, to delete: {{definitions_to_delete.length}}, edited: {{edited_definitions.definitions}})
+          
+	</div>  	
+  </body>
+  <script type="text/javascript" src='js/word.js'>
+  		
+  	</script>
+</html>

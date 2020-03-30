@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head profile="http://gmpg.org/xfn/11">
+    <title>Botjagwar</title>
+    <meta content="">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+    <style>
+    </style>  
+  </head>
+  <body>
+  <div class="mr-md-3" id='app'>
+      Definition in {{definition.language}}
+      <p> 
+      <textarea class="form-control" rows="3">{{definition.definition}}</textarea>
+    </p>
+      Words containing definition:<br>
+      <table class='table table-sm table-bordered'>
+        <thead>
+          <th>ID</th>
+          <th>word</th>
+          <th>Part of speech</th>
+          <th>Language</th>
+          <th>actions</th>
+        </thead>
+        <tr v-for="word in words">      
+            <td>{{word.id}}</td>
+            <td>{{word.word}}</td>
+            <td>{{word.part_of_speech}}</td>
+            <td>{{word.language}}</td>
+            <td>            
+              <button type="button" v-on:click='deleteWord(word)'>delete</button>
+            </td>
+        </tr>         
+      </table>
+
+      <button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>          
+  </div>    
+  <script type="text/javascript" src='vue.js'></script> 
+  <script type="text/javascript" src='js/definition.js'></script>
+  </body>
+</html>
