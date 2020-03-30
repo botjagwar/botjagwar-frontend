@@ -9,7 +9,7 @@
     </style>  
   </head>
   <body>
-  <div class="mr-md-3" id='app'>
+  <div style="margin:5%;" class="mr-md-3" id='app'>
       Definition in {{definition.language}}
       <p> 
       <textarea class="form-control" rows="3">{{definition.definition}}</textarea>
@@ -29,7 +29,7 @@
             <td>{{word.part_of_speech}}</td>
             <td>{{word.language}}</td>
             <td>            
-              <button type="button" v-on:click='deleteWord(word)'>dissociate</button>
+              <button v-if="word.id" type="button" v-on:click='deleteWord(word)'>dissociate</button>
             </td>
         </tr>         
       </table>

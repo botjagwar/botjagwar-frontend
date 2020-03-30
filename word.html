@@ -11,7 +11,7 @@
   	<!--<script type="text/javascript" src='axios.js'></script>-->  	
   </head>
   <body>
-	<div class="mr-md-3" id='app'>      
+	<div style="margin:5%;" class="mr-md-3" id='app'>      
     	<h1>{{word.word}}</h1>
       <h2>{{word.language}}</h2>
       <h3>{{word.part_of_speech}}</h3>      
@@ -25,13 +25,13 @@
         <tr v-for="definition in word.definitions">      
             <td>{{definition.id}}</td>
             <td>
-                <a v-bind:href="'/definition.html?defid=' + definition.id">
-                {{definition.definition}}
-                </a>
+                <a v-if="definition.id" v-bind:href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a>
+                <span v-else>{{definition.definition}}</stan>
             </td>
             <td>({{definition.language}})</td>
             <td>            
-              <button type="button" v-on:click='deleteDefinition(definition)'>delete</button>
+              <button type="button" v-on:click='deleteDefinition(definition)'>
+              delete</button>
             </td>
         </tr>
         <hr>
@@ -42,13 +42,19 @@
           </td>
           <td>
             <input v-model="new_definition.language" @keyup.enter='addDefinition' placeholder="set language" value="mg">
-              <button type="button" v-on:click='addDefinition'>add</button>
+              <button  type="button" v-on:click='addDefinition'>add</button>
           </td> 
         </tr>
       </table>
-
-      <button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>(new_
-      definitions: {{new_definitions.length}}, to delete: {{definitions_to_delete.length}}, edited: {{edited_definitions.definitions}})
+      <table class='table table-sm table-bordered'>
+        <tr>
+          <td><button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button></td>
+          <td>new definitions: {{new_definitions.length}}</td>
+          <td>to delete: {{definitions_to_delete.length}}</td>
+          <td>edited: {{edited_definitions.length}}</td>
+        </tr>
+      </table>
+      
           
 	</div>  	
   </body>
