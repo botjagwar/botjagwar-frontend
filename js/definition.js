@@ -28,8 +28,6 @@ var app = new Vue({
 			console.log(definition);
 			return definition
 		}(),
-
-		keke: 'yaeya'
 	},
 
 	methods: {
@@ -58,7 +56,14 @@ var app = new Vue({
 		},
 
 		deleteWord: function (word) {
-			console.log('request sent')					
+			console.log('deleteWord called');					
+			if (this.words.includes(word)) {
+				let index = this.words.indexOf(word);
+				if (index > -1) {
+				  this.words.splice(index, 1);
+				}				
+				console.log('deleted in definition list');
+			}			
 		},
 	},
 
