@@ -28,6 +28,23 @@ var app = new Vue({
 			console.log(definition);
 			return definition
 		}(),
+
+		language_mapping: function () {
+			let mappings = {}
+			let lang_data = JSON.parse(Get(location.origin + "/langs" ));
+			for (let i = 0; i < lang_data.length; i++) {
+				if (lang_data[i]["english_name"] !== null) {
+					mappings[lang_data[i]["iso_code"]] = lang_data[i]["english_name"];
+				}
+				else if (lang_data[i]["malagasy_name"] !== null) {
+					mappings[lang_data[i]["iso_code"]] = lang_data[i]["malagasy_name"];
+				}
+				else {
+					mappings[lang_data[i]["iso_code"]] = 'Unknwown (' + lang_data[i]["iso_code"] + ')'; 
+				}
+			}
+			return mappings			
+		}(),
 	},
 
 	methods: {

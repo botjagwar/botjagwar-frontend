@@ -10,9 +10,14 @@
   </head>
   <body>
   <div style="margin:5%;" class="mr-md-3" id='app'>
-      Definition in {{definition.language}}
-      <p> 
-      <textarea class="form-control" rows="3">{{definition.definition}}</textarea>
+      Definition in {{definition.language}}:
+      {{definition.definition}}
+    <p> 
+      <textarea v-model="definition.definition" name='defn 'class="form-control" rows="3">{{definition.definition}}</textarea>
+    </p>
+    <p>
+      Edit summary:<br/>
+      <button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>
     </p>
       {{words.length}} words referenced containing definition:<br>
       <table class='table table-sm table-bordered'>
@@ -21,20 +26,20 @@
           <th>word</th>
           <th>Part of speech</th>
           <th>Language</th>
+          <th>Last modified</th>
           <th>actions</th>
         </thead>
         <tr v-for="word in words">      
             <td>{{word.id}}</td>
             <td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
             <td>{{word.part_of_speech}}</td>
-            <td>{{word.language}}</td>
+            <td>{{language_mapping[word.language]}}</td>
+            <td>{{word.last_modified}}</td>
             <td>            
               <button v-if="word.id" type="button" v-on:click='deleteWord(word)'>dissociate</button>
             </td>
         </tr>         
-      </table>
-      Edit summary:<br/>
-      <button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>          
+      </table>                
   </div>    
   <script type="text/javascript" src='vue.js'></script> 
   <script type="text/javascript" src='js/definition.js'></script>
