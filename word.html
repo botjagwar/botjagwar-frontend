@@ -30,7 +30,7 @@
             </td>
             <td>({{language_mapping[definition.language]}})</td>
             <td>            
-              <button type="button" v-on:click='deleteDefinition(definition)'>
+              <button type="button" class="btn btn-sm btn-danger" v-on:click='deleteDefinition(definition)'>
               delete</button>
             </td>
         </tr>
@@ -42,13 +42,13 @@
           </td>
           <td>
             <input v-model="new_definition.language" @keyup.enter='addDefinition' placeholder="set language" value="mg">
-              <button  type="button" v-on:click='addDefinition'>add</button>
+              <button class="btn btn-primary btn-sm" type="button" v-on:click='addDefinition'>add</button>
           </td> 
         </tr>
       </table>
       <table class='table table-sm table-bordered'>
         <tr>
-          <td><button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button></td>
+          <td><button class="btn btn-success" type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button></td>
           <td>new definitions: {{new_definitions.length}}</td>
           <td>to delete: {{definitions_to_delete.length}}</td>
           <td>edited: {{edited_definitions.length}}</td>
@@ -58,7 +58,6 @@
           
 	</div>  	
   </body>
-  <script type="text/javascript" src='js/word.js'>
-  		
-  	</script>
+  <script type="module" src='js/utils.js'></script>
+  <script type="module" src='js/word.js'></script>
 </html>

@@ -17,7 +17,7 @@
     </p>
     <p>
       Edit summary:<br/>
-      <button type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>
+      <button class="btn btn-sm btn-primary" type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>
     </p>
       {{words.length}} words referenced containing definition:<br>
       <table class='table table-sm table-bordered'>
@@ -33,15 +33,16 @@
             <td>{{word.id}}</td>
             <td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
             <td>{{word.part_of_speech}}</td>
-            <td>{{language_mapping[word.language]}}</td>
+            <td><a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></td>
             <td>{{word.last_modified}}</td>
             <td>            
-              <button v-if="word.id" type="button" v-on:click='deleteWord(word)'>dissociate</button>
+              <button  class="btn btn-sm btn-danger" v-if="word.id" type="button" v-on:click='deleteWord(word)'>dissociate</button>
             </td>
         </tr>         
       </table>                
   </div>    
   <script type="text/javascript" src='vue.js'></script> 
-  <script type="text/javascript" src='js/definition.js'></script>
+  <script type="module" src='js/utils.js'></script>
+  <script type="module" src='js/definition.js'></script>
   </body>
 </html>

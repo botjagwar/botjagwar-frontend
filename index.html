@@ -11,17 +11,26 @@
   	<!--<script type="text/javascript" src='axios.js'></script>-->  	
 </head>
 <body>
-<div class="mr-md-3" id='app'>
+<div style="margin:5%;" class="mr-md-3" id='app'>
 	<label for='language'>Language code</label><input v-model="language" @keyup.enter='fetchWords' placeholder="akz">
 	<button type="button" v-on:click='fetchWords'>Fetch words from language</button>
 	<span v-bind='isLoading' v-if='isLoading'>Loading</span>
 	<h1>{{title}}</h1>
-	Dictionary for <a v-bind:href="'/language.html?code=' + language">{{language}}</a>
+	Dictionary for <a v-bind:href="'/language.html?code=' + language">{{language_mapping[language]}}</a>
 	<table class='table table-sm table-bordered' >
+		<thead>
+			<th>ID</th>
+			<th>word</th>
+			<th>Part of speech</th>
+			<th>Language</th>
+			<th>Last modified</th>
+			<th>actions</th>
+		</thead>
 		<tr v-for="word in words">
+			<td>{{word.id}}</td>
 			<td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
 			<td>{{word.part_of_speech}}</td>
-			<td>{{word.language}}</td>
+			<td><a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></td>
 			<td>	
 				<span v-for="definition in word.definitions">
 				{{definition.definition}} ({{definition.language}})<br>					
@@ -33,5 +42,6 @@
 </div> 
 
 </body>
-<script type="text/javascript" src='js/main.js'></script>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src='js/main.js'></script>
 </html>

@@ -1,15 +1,11 @@
-function Get(yourUrl) {
-	var Httpreq = new XMLHttpRequest(); // a new request
-	Httpreq.open("GET", yourUrl, false);
-	Httpreq.send(null);
-	return Httpreq.responseText;          
-}
+import { Get, fetch_language_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
 					
 	data: {	
 		language: 'akz',
+		language_mapping: fetch_language_mapping(),
 		isLoading: false,							
 		words: JSON.parse(Get(location.origin + "/dict/akz" )),
 		changes: [],

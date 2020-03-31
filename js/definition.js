@@ -1,9 +1,4 @@
-function Get(yourUrl) {
-	var Httpreq = new XMLHttpRequest(); // a new request
-	Httpreq.open("GET", yourUrl, false);
-	Httpreq.send(null);
-	return Httpreq.responseText;          
-}
+import { Get, fetch_language_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
@@ -11,9 +6,9 @@ var app = new Vue({
 	data: {	
 		words: function () {
 			let params = new URLSearchParams(location.search);
-			id = params.get('defid')
-			defn = JSON.parse(Get(location.origin + "/defw/" + id ));
-			words = defn[0].words[0];
+			let id = params.get('defid');
+			let defn = JSON.parse(Get(location.origin + "/defw/" + id ));
+			let words = defn[0].words[0];
 			console.log('words');
 			console.log(words);					
 			return words
@@ -21,30 +16,15 @@ var app = new Vue({
 
 		definition: function () {
 			let params = new URLSearchParams(location.search);
-			id = params.get('defid')
-			defn = JSON.parse(Get(location.origin + "/defn/" + id ));			
-			definition = defn[0];
+			let id = params.get('defid')
+			let defn = JSON.parse(Get(location.origin + "/defn/" + id ));			
+			let definition = defn[0];
 			console.log('defn');
 			console.log(definition);
 			return definition
 		}(),
 
-		language_mapping: function () {
-			let mappings = {}
-			let lang_data = JSON.parse(Get(location.origin + "/langs" ));
-			for (let i = 0; i < lang_data.length; i++) {
-				if (lang_data[i]["english_name"] !== null) {
-					mappings[lang_data[i]["iso_code"]] = lang_data[i]["english_name"];
-				}
-				else if (lang_data[i]["malagasy_name"] !== null) {
-					mappings[lang_data[i]["iso_code"]] = lang_data[i]["malagasy_name"];
-				}
-				else {
-					mappings[lang_data[i]["iso_code"]] = 'Unknwown (' + lang_data[i]["iso_code"] + ')'; 
-				}
-			}
-			return mappings			
-		}(),
+		language_mapping: fetch_language_mapping(),
 	},
 
 	methods: {
