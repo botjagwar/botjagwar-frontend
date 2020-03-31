@@ -11,14 +11,31 @@ var app = new Vue({
 	data: {	
 		word: function () {
 			let params = new URLSearchParams(location.search);
-			word_id = params.get('word')
-			return JSON.parse(Get(location.origin + "/wrd/" + word_id ))
+			let word_id = params.get('word')
+			let words = JSON.parse(Get(location.origin + "/wrd/" + word_id));			
+			return words;
 		}(),
 		new_definition: {},
 		new_definitions: [],
 		edited_definitions: [],
 		definitions_to_delete: [],
-
+		
+		language_mapping: function () {
+			let mappings = {}
+			let lang_data = JSON.parse(Get(location.origin + "/langs" ));
+			for (let i = 0; i < lang_data.length; i++) {
+				if (lang_data[i]["english_name"] !== null) {
+					mappings[lang_data[i]["iso_code"]] = lang_data[i]["english_name"];
+				}
+				else if (lang_data[i]["malagasy_name"] !== null) {
+					mappings[lang_data[i]["iso_code"]] = lang_data[i]["malagasy_name"];
+				}
+				else {
+					mappings[lang_data[i]["iso_code"]] = 'Unknwown (' + lang_data[i]["iso_code"] + ')'; 
+				}
+			}
+			return mappings			
+		}(),
 	},
 
 	methods: {
@@ -54,6 +71,16 @@ var app = new Vue({
 
 		sendRequest: function () {			
 			console.log('request sent')
+		},
+
+		getLanguageName: function(code) {
+			if (this.language_mapping[code] !== undefined) {
+				return this.language_mapping[code];
+			}
+			else {
+				
+	    		return name; //this.language_mapping[this.language]
+			}
 		},
 
 		deleteDefinition: function (definition) {		

@@ -13,7 +13,7 @@
   <body>
 	<div style="margin:5%;" class="mr-md-3" id='app'>      
     	<h1>{{word.word}}</h1>
-      <h2>{{word.language}}</h2>
+      <h2>{{language_mapping[word.language]}}</h2>
       <h3>{{word.part_of_speech}}</h3>      
       <table class='table table-sm table-bordered'>
         <thead>
@@ -28,7 +28,7 @@
                 <a v-if="definition.id" v-bind:href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a>
                 <span v-else>{{definition.definition}}</stan>
             </td>
-            <td>({{definition.language}})</td>
+            <td>({{language_mapping[definition.language]}})</td>
             <td>            
               <button type="button" v-on:click='deleteDefinition(definition)'>
               delete</button>
