@@ -19,8 +19,9 @@
       <textarea v-model="definition.definition" name='defn 'class="form-control" rows="3">{{definition.definition}}</textarea>
     </p>
     <p>
-      Edit summary:<br/>
-      <button class="btn btn-sm btn-primary" type="button" v-on:click='saveChanges'>Save ({{editCount}} changes)</button>
+      Edit summary: ({{new_words_version.length}} changes)<br/>
+      <button class="btn btn-sm btn-primary" type="button" v-on:click='saveChanges'>Save</button>
+      <button class="btn btn-sm btn-secondary" type="button" v-on:click='cancelChanges'>Cancel</button>
     </p>
       {{words.length}} words referenced containing definition:<br>
       <table class='table table-sm table-bordered'>
@@ -39,7 +40,7 @@
             <td><a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></td>
             <td>{{word.last_modified}}</td>
             <td>            
-              <button  class="btn btn-sm btn-danger" v-if="word.id" type="button" v-on:click='deleteWord(word)'>dissociate</button>
+              <button  class="btn btn-sm btn-danger" v-bind="word" type="button" v-on:click='deleteWord(word)'>dissociate</button>
             </td>
         </tr>         
       </table>                
