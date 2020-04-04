@@ -1,4 +1,4 @@
-import { Get, fetch_language_mapping } from './utils.js'
+import { Get, Put, fetch_language_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
@@ -35,7 +35,7 @@ var app = new Vue({
 		},
 
 		saveChanges: function () {
-			this.validate_changes()
+			this.validateChanges()
 			console.log('save Changes called');
 			console.log(this.new_definitions);
 			this.prepareRequest();
@@ -45,40 +45,34 @@ var app = new Vue({
 		validateChanges: function () {
 			console.log('validate new definitions');
 			for (let i = 0; i < this.new_definitions.length; i++) {
-				if (this.validate_language(this.new_definitions[i].language)) {
-					throw 'Language'
+				if (!this.validateLanguage(this.new_definitions[i].language)) {
+					throw 'Language is not valid';
 				}
 			}
 			console.log('validate edited definitions');
 		},
 
-		validateLanguage: function (code) {
-			if (language_mapping.contains(code)) {
-				return true;
-			}
-			// code like aaa-bbb is deemed valid
-			else if (code.length > 7) {
-				return false;
-			}
-			else {
-				return true;
-			}
+		validateLanguage: function (code) {			
+			return true;
 		},
 
 		prepareRequest: function () {
 			console.log('request prepared')
+			for (let j = 0; j < this.word.definitions.length; j++) {
+				this.word.definitions[j].definition_language = this.word.definitions[j].language;
+			}
 		},
 
 		sendRequest: function () {			
-			console.log('request sent')
+			console.log('request sent', this.word);
+			Put('/dict/entry/' +  this.word.id + '/edit', JSON.stringify(this.word));
 		},
 
 		getLanguageName: function(code) {
 			if (this.language_mapping[code] !== undefined) {
 				return this.language_mapping[code];
 			}
-			else {
-				
+			else {				
 	    		return name; //this.language_mapping[this.language]
 			}
 		},
