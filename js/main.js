@@ -4,10 +4,20 @@ var app = new Vue({
 	el: '#app',
 					
 	data: {	
-		language: 'akz',
+		language: function () {
+			let params = new URLSearchParams(location.search);
+			return params.get('language');				
+		}(),
 		language_mapping: fetch_language_mapping(),
 		isLoading: false,							
-		words: JSON.parse(Get(location.origin + "/dict/akz" )),
+		words: function () {
+			let params = new URLSearchParams(location.search);
+			let id = params.get('language');
+			let words = Get(location.origin + "/dict/" + id );
+			return words
+		}(), 
+
+		
 		changes: [],
 		title:'Dictionary',
 	},
@@ -20,7 +30,7 @@ var app = new Vue({
 
 		fetchWords: function () {
 			this.isLoading = true;
-			this.words = JSON.parse(Get(location.origin + "/dict/" + this.language));
+			this.words = Get(location.origin + "/dict/" + this.language);
 			this.isLoading = false;
 		},
 	}

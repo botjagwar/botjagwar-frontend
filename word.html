@@ -10,10 +10,14 @@
     <script type="text/javascript" src='vue.js'></script>
   	<!--<script type="text/javascript" src='axios.js'></script>-->  	
   </head>
+  <script type="module" src='js/utils.js'></script>
+  <script type="module" src='js/word.js'></script>
+
   <body>
 	<div style="margin:5%;" class="mr-md-3" id='app'>      
     	<h1>{{word.word}}</h1>
-      <h2>{{language_mapping[word.language]}}</h2>
+      <h2>
+      <a v-bind:href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></h2>
       <h3>{{word.part_of_speech}}</h3>      
       <table class='table table-sm table-bordered'>
         <thead>
@@ -53,11 +57,12 @@
           <td>to delete: {{definitions_to_delete.length}}</td>
           <td>edited: {{edited_definitions.length}}</td>
         </tr>
+        <tr>
+          <td>{{status}}</td>
+        </tr>
       </table>
       
           
 	</div>  	
   </body>
-  <script type="module" src='js/utils.js'></script>
-  <script type="module" src='js/word.js'></script>
 </html>

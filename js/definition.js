@@ -7,7 +7,7 @@ var app = new Vue({
 		words: function () {
 			let params = new URLSearchParams(location.search);
 			let id = params.get('defid');
-			let defn = JSON.parse(Get(location.origin + "/defw/" + id ));
+			let defn = Get(location.origin + "/defw/" + id );
 			let words = defn[0].words[0];
 			console.log('words');
 			console.log(words);					
@@ -17,7 +17,7 @@ var app = new Vue({
 		definition: function () {
 			let params = new URLSearchParams(location.search);
 			let id = params.get('defid')
-			let defn = JSON.parse(Get(location.origin + "/defn/" + id ));			
+			let defn = Get(location.origin + "/defn/" + id );			
 			let definition = defn[0];
 			console.log('defn');
 			console.log(definition);

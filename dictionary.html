@@ -10,6 +10,8 @@
     <script type="text/javascript" src='vue.js'></script>
   	<!--<script type="text/javascript" src='axios.js'></script>-->  	
 </head>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src='js/main.js'></script>
 <body>
 <div style="margin:5%;" class="mr-md-3" id='app'>
 	<label for='language'>Language code</label><input v-model="language" @keyup.enter='fetchWords' placeholder="akz">
@@ -42,6 +44,4 @@
 </div> 
 
 </body>
-<script type="module" src="js/utils.js"></script>
-<script type="module" src='js/main.js'></script>
 </html>

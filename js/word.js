@@ -1,9 +1,4 @@
-function Get(yourUrl) {
-	var Httpreq = new XMLHttpRequest(); // a new request
-	Httpreq.open("GET", yourUrl, false);
-	Httpreq.send(null);
-	return Httpreq.responseText;          
-}
+import { Get, fetch_language_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
@@ -12,30 +7,17 @@ var app = new Vue({
 		word: function () {
 			let params = new URLSearchParams(location.search);
 			let word_id = params.get('word')
-			let words = JSON.parse(Get(location.origin + "/wrd/" + word_id));			
+			//let words = JSON.parse(Get(location.origin + "/wrd/" + word_id));
+			let words = Get(location.origin + "/wrd/" + word_id);
 			return words;
 		}(),
 		new_definition: {},
 		new_definitions: [],
 		edited_definitions: [],
 		definitions_to_delete: [],
+		status: '',
 		
-		language_mapping: function () {
-			let mappings = {}
-			let lang_data = JSON.parse(Get(location.origin + "/langs" ));
-			for (let i = 0; i < lang_data.length; i++) {
-				if (lang_data[i]["english_name"] !== null) {
-					mappings[lang_data[i]["iso_code"]] = lang_data[i]["english_name"];
-				}
-				else if (lang_data[i]["malagasy_name"] !== null) {
-					mappings[lang_data[i]["iso_code"]] = lang_data[i]["malagasy_name"];
-				}
-				else {
-					mappings[lang_data[i]["iso_code"]] = 'Unknwown (' + lang_data[i]["iso_code"] + ')'; 
-				}
-			}
-			return mappings			
-		}(),
+		language_mapping: fetch_language_mapping(),
 	},
 
 	methods: {
@@ -60,9 +42,27 @@ var app = new Vue({
 			this.sendRequest();
 		},
 
-		validate_changes: function () {
+		validateChanges: function () {
 			console.log('validate new definitions');
+			for (let i = 0; i < this.new_definitions.length; i++) {
+				if (this.validate_language(this.new_definitions[i].language)) {
+					throw 'Language'
+				}
+			}
 			console.log('validate edited definitions');
+		},
+
+		validateLanguage: function (code) {
+			if (language_mapping.contains(code)) {
+				return true;
+			}
+			// code like aaa-bbb is deemed valid
+			else if (code.length > 7) {
+				return false;
+			}
+			else {
+				return true;
+			}
 		},
 
 		prepareRequest: function () {
