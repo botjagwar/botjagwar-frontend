@@ -4,18 +4,19 @@
 <head profile="http://gmpg.org/xfn/11">
     <title>Botjagwar</title>
     <meta content="">
+    <link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
     <style>
-    </style>  
+    </style>
   </head>
-  <script type="text/javascript" src='lib/vue.js'></script> 
+  <script type="text/javascript" src='lib/vue.js'></script>
   <script type="module" src='js/utils.js'></script>
   <script type="module" src='js/definition.js'></script>
   <body>
   <div style="margin:5%;" class="mr-md-3" id='app'>
       Definition in {{definition.language}}:
       {{definition.definition}}
-    <p> 
+    <p>
       <textarea v-model="definition.definition" name='defn 'class="form-control" rows="3">{{definition.definition}}</textarea>
     </p>
     <p>
@@ -24,7 +25,7 @@
       <button class="btn btn-sm btn-secondary" type="button" v-on:click='cancelChanges'>Cancel</button>
     </p>
       {{words.length}} words referenced containing definition:<br>
-      <table class='table table-sm table-bordered'>
+      <table id="linkedWords" class='table table-sm table-bordered'>
         <thead>
           <th>ID</th>
           <th>word</th>
@@ -33,17 +34,29 @@
           <th>Last modified</th>
           <th>actions</th>
         </thead>
-        <tr v-for="word in words">      
+        <tr v-for="word in words">
             <td>{{word.id}}</td>
             <td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
             <td>{{word.part_of_speech}}</td>
             <td><a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></td>
             <td>{{word.last_modified}}</td>
-            <td>       
+            <td>
               <button class="btn btn-sm btn-danger" v-bind="word" type="button" v-on:click='deleteWord(word)'>dissociate</button>
             </td>
-        </tr>         
-      </table>                
-  </div>    
+        </tr>
+      </table>
+  </div>
+  <script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
+  <script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
+  <script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
+  <script type="text/javascript">
+  // Basic example
+  $(document).ready(function () {
+    $('#linkedWords').DataTable({
+      "paging": true // false to disable pagination (or any other option)
+    });
+    $('.dataTables_length').addClass('bs-select');
+  });
+  </script>
   </body>
 </html>

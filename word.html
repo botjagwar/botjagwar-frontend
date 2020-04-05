@@ -4,21 +4,21 @@
 <head profile="http://gmpg.org/xfn/11">
     <title>Botjagwar</title>
     <meta content="">
+    <link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
     <link rel="stylesheet" href="/lib/bootstrap/css/bootstrap.css"/>
     <style>
     </style>
     <script type="text/javascript" src='lib/vue.js'></script>
-  	<!--<script type="text/javascript" src='axios.js'></script>-->  	
   </head>
   <script type="module" src='js/utils.js'></script>
   <script type="module" src='js/word.js'></script>
 
   <body>
-	<div style="margin:5%;" class="mr-md-3" id='app'>      
+	<div style="margin:5%;" class="mr-md-3" id='app'>
     	<h1>{{word.word}}</h1>
       <h2>
       <a v-bind:href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></h2>
-      <h3>{{word.part_of_speech}}</h3>      
+      <h3>{{word.part_of_speech}}</h3>
       <table class='table table-sm table-bordered'>
         <thead>
           <th>ID</th>
@@ -26,14 +26,14 @@
           <th>language</th>
           <th>actions</th>
         </thead>
-        <tr v-for="definition in word.definitions">      
+        <tr v-for="definition in word.definitions">
             <td>{{definition.id}}</td>
             <td>
                 <a v-if="definition.id" v-bind:href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a>
                 <span v-else>{{definition.definition}}</stan>
             </td>
             <td>({{language_mapping[definition.language]}})</td>
-            <td>            
+            <td>
               <button type="button" class="btn btn-sm btn-danger" v-on:click='deleteDefinition(definition)'>
               delete</button>
             </td>
@@ -47,7 +47,7 @@
           <td>
             <input v-model="new_definition.language" @keyup.enter='addDefinition' placeholder="set language" value="mg">
               <button class="btn btn-primary btn-sm" type="button" v-on:click='addDefinition'>add</button>
-          </td> 
+          </td>
         </tr>
       </table>
       <table class='table table-sm table-bordered'>
@@ -61,8 +61,8 @@
           <td>{{status}}</td>
         </tr>
       </table>
-      
-          
-	</div>  	
+
+
+	</div>
   </body>
 </html>
