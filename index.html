@@ -4,44 +4,47 @@
 <head>
     <title>Botjagwar</title>
     <meta content="">
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
     <style>
     </style>
-    <script type="text/javascript" src='vue.js'></script>
+    <script type="text/javascript" src='lib/vue.js'></script>    
+    
   	<!--<script type="text/javascript" src='axios.js'></script>-->  	
 </head>
 <script type="module" src="js/utils.js"></script>
-<script type="module" src='js/main.js'></script>
+<script type="module" src='main.js'></script>
 <body>
 <div style="margin:5%;" class="mr-md-3" id='app'>
 	<label for='language'>Language code</label><input v-model="language" @keyup.enter='fetchWords' placeholder="">
 	<button type="button" v-on:click='fetchWords'>Fetch words from language</button>
 	<span v-bind='isLoading' v-if='isLoading'>Loading</span>
 	<h1>{{title}}</h1>
-	Dictionary for <a v-bind:href="'/language.html?code=' + language">{{language_mapping[language]}}</a>
-	<table class='table table-sm table-bordered' >
+	<table id="languageTable" class='table table-sm table-bordered' >
 		<thead>
-			<th>ID</th>
-			<th>word</th>
-			<th>Part of speech</th>
 			<th>Language</th>
-			<th>Last modified</th>
-			<th>actions</th>
+			<th>Language name</th>
+			<th>entries</th>
 		</thead>
-		<tr v-for="word in words">
-			<td>{{word.id}}</td>
-			<td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
-			<td>{{word.part_of_speech}}</td>
-			<td><a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></td>
-			<td>	
-				<span v-for="definition in word.definitions">
-				{{definition.definition}} ({{definition.language}})<br>					
-				</span>
-			</td>
-			<td>{{word.last_modified}}</td>
+		<tr v-for="language in languages">
+			<td>{{language.language}}</td>
+			<td><a :href="'/dictionary.html?language=' + language.language">{{language_mapping[language.language]}}</a></td>
+			<td>{{language.entries}}</td>		
 		</tr>
 	</table> 
 </div> 
+<script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
+<script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
+<script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
+<script type="text/javascript">
+	// Basic example
+$(document).ready(function () {
+  $('#languageTable').DataTable({
+    "paging": true // false to disable pagination (or any other option)
+  });
+  $('.dataTables_length').addClass('bs-select');
+});
+</script>
 
 </body>
 </html>
