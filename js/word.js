@@ -2,8 +2,8 @@ import { Get, Put, fetch_language_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
-					
-	data: {	
+
+	data: {
 		word: function () {
 			let params = new URLSearchParams(location.search);
 			let word_id = params.get('word')
@@ -16,7 +16,7 @@ var app = new Vue({
 		edited_definitions: [],
 		definitions_to_delete: [],
 		status: '',
-		
+
 		language_mapping: fetch_language_mapping(),
 	},
 
@@ -52,7 +52,7 @@ var app = new Vue({
 			console.log('validate edited definitions');
 		},
 
-		validateLanguage: function (code) {			
+		validateLanguage: function (code) {
 			return true;
 		},
 
@@ -63,7 +63,7 @@ var app = new Vue({
 			}
 		},
 
-		sendRequest: function () {			
+		sendRequest: function () {
 			console.log('request sent', this.word);
 			Put('/dict/entry/' +  this.word.id + '/edit', JSON.stringify(this.word));
 		},
@@ -72,18 +72,18 @@ var app = new Vue({
 			if (this.language_mapping[code] !== undefined) {
 				return this.language_mapping[code];
 			}
-			else {				
+			else {
 	    		return name; //this.language_mapping[this.language]
 			}
 		},
 
-		deleteDefinition: function (definition) {		
-			console.log('delete Definition called');					
+		deleteDefinition: function (definition) {
+			console.log('delete Definition called');
 			if (this.word.definitions.includes(definition)) {
 				let index = this.word.definitions.indexOf(definition);
 				if (index > -1) {
 				  this.word.definitions.splice(index, 1);
-				}				
+				}
 				console.log('deleted in definition list');
 			}
 
@@ -91,21 +91,21 @@ var app = new Vue({
 				let index = this.new_definitions.indexOf(definition);
 				if (index > -1) {
 				  this.new_definitions.splice(index, 1);
-				}				
+				}
 				console.log('deleted in new definition list');
 			}
 
 			if (!this.definitions_to_delete.includes(definition)) {
 				if (definition.id !== undefined) {
 					this.definitions_to_delete.push(definition);
-				}				
-				console.log('added in definition to be deleted list'); 				
-			}		
+				}
+				console.log('added in definition to be deleted list');
+			}
 		},
 	},
 
 	computed: {
-		editCount: function () {			
+		editCount: function () {
 			return (this.new_definitions.length +
 			this.edited_definitions.length +
 			this.definitions_to_delete.length);

@@ -2,15 +2,15 @@ import { Get, Put, fetch_language_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
-					
-	data: {	
+
+	data: {
 		words: function () {
 			let params = new URLSearchParams(location.search);
 			let id = params.get('defid');
 			let defn = Get(location.origin + "/defw/" + id );
 			let words = defn[0].words[0];
 			//console.log('words');
-			//console.log(words);					
+			//console.log(words);
 			return words
 		}(),
 
@@ -20,7 +20,7 @@ var app = new Vue({
 		definition: function () {
 			let params = new URLSearchParams(location.search);
 			let id = params.get('defid')
-			let defn = Get(location.origin + "/defn/" + id );			
+			let defn = Get(location.origin + "/defn/" + id );
 			let definition = defn[0];
 			console.log('defn');
 			console.log(definition);
@@ -55,14 +55,14 @@ var app = new Vue({
 		prepareRequest: function () {
 			console.log('request prepared')
 			// Definition language
-			this.definition.definition_language = this.definition.language 
+			this.definition.definition_language = this.definition.language
 
 			// todo: words
 			for (let j = 0; j < this.new_words_version.length; j++) {
 				for (let k = 0; k < this.new_words_version[j].definitions.length; k++) {
 					this.new_words_version[j].definitions[k].definition_language = this.new_words_version[j].definitions[k].language;
-				}				
-			}		
+				}
+			}
 		},
 
 		sendRequest: function () {
@@ -81,7 +81,7 @@ var app = new Vue({
 		},
 
 		deleteWord: function (word) {
-			console.log('deleteWord called');					
+			console.log('deleteWord called');
 			if (this.words.includes(word)) {
 				let index = this.words.indexOf(word);
 				if (index > -1) {
@@ -96,7 +96,7 @@ var app = new Vue({
 						this.new_words_version.push(word_fetched);
 						break;
 					}
-					
+
 				}
 			}
 		},

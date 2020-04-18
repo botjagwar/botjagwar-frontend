@@ -20,7 +20,7 @@ export function Put(target_url, data = {}) {
 export function Delete(target_url, data = {}) {
 	return Request(target_url, 'DELETE', data);
 }
-	
+
 export function fetch_language_mapping() {
 	let mappings = {}
 	//let lang_data = JSON.parse(Get(location.origin + "/langs" ));
@@ -33,8 +33,8 @@ export function fetch_language_mapping() {
 			mappings[lang_data[i]["iso_code"]] = lang_data[i]["malagasy_name"];
 		}
 		else {
-			mappings[lang_data[i]["iso_code"]] = 'Unknwown (' + lang_data[i]["iso_code"] + ')'; 
+			mappings[lang_data[i]["iso_code"]] = 'Unknwown (' + lang_data[i]["iso_code"] + ')';
 		}
 	}
-	return mappings			
+	return mappings
 }
