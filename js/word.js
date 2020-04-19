@@ -15,7 +15,7 @@ var app = new Vue({
 		new_definitions: [],
 		edited_definitions: [],
 		definitions_to_delete: [],
-		status: '',
+		message: 'Ready.',
 
 		language_mapping: fetch_language_mapping(),
 	},
@@ -66,6 +66,9 @@ var app = new Vue({
 		sendRequest: function () {
 			console.log('request sent', this.word);
 			Put('/dict/entry/' +  this.word.id + '/edit', JSON.stringify(this.word));
+			this.new_definitions = [];
+			this.edited_definitions.length = [];
+			this.definitions_to_delete = [];
 		},
 
 		getLanguageName: function(code) {

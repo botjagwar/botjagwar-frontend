@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<head>
+    <title>New words - Botjagwar</title>
+    <meta content="">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
+	<link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
+	<link rel="stylesheet" href="/css/style.css"/>
+    <style>
+    </style>
+    <script type="text/javascript" src='lib/vue.js'></script>
+
+  	<!--<script type="text/javascript" src='axios.js'></script>-->
+</head>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src='js/recentchanges.js'></script>
+<body>
+<div style="margin:5%;" class="mr-md-3" id='app'>
+	<h1>New words</h1>
+	<table id="NewWordsTable" class='paginable table table-sm table-bordered' >
+		<thead>
+			<th>Change date</th>
+			<th>Word</th>
+			<th>Language code</th>
+			<th>Part of speech</th>
+		</thead>
+		<tr v-for="word in words">
+			<td>{{word.last_modified}}</td>
+			<td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
+			<td>
+				<a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
+				<span class="badge badge-light"><a :href="'/dictionary.html?language=' + word.language">{{word.language}}</a></span>
+			</td>
+			<td>{{word.part_of_speech}}</td>
+		</tr>
+	</table>
+	<h1>New definitions</h1>
+	<table id="NewDefinitionsTable" class='paginable table table-sm table-bordered' >
+		<thead>
+			<th>Last modified</th>
+			<th>Definitions</th>
+			<th>Language</th>
+			<th>Actions</th>
+		</thead>
+		<tr v-for="definition in definitions">
+			<td>{{definition.date_changed}}</td>
+			<td>{{definition.definition}}</td>
+			<td>
+				<a :href="'/dictionary.html?language=' + definition.definition_language">{{language_mapping[definition.definition_language]}}</a>
+				<span class="badge badge-light"><a :href="'/dictionary.html?language=' + definition.definition_language">{{definition.definition_language}}</a></span>
+			</td>
+			<td><a :href="'/definition.html?defid=' + definition.id "><button class="btn btn-primary btn-sm" type="button">edit</button></a></td>
+		</tr>
+	</table>
+</div>
+<script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
+<script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
+<script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
+<script type="text/javascript">
+	// Basic example
+$(document).ready(function () {
+  $('.paginable').DataTable({
+    "paging": true // false to disable pagination (or any other option)
+  });
+  $('.dataTables_length').addClass('bs-select');
+});
+</script>
+
+</body>
+</html>
