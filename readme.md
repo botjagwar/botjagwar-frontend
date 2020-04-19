@@ -30,7 +30,16 @@ PostgREST provides an off-the-shelf, lightning-fast and almost complete REST API
 
 A PostgREST binary for is available in /bin folder, but feel free to download the most recent version at [PostgREST official repository](https://github.com/PostgREST/postgrest/releases)
 
-### Authors
+## Running it
+Set up backend services:
+- Download and install [botjagwar](https://github.com/radomd92/botjagwar)
+- Download botjagwar-frontend repo
+ - run `install.sh` as sudo
+- Run `dictionary_service.py`, using screen to keep it running: `screen python3 /opt/botjagwar/dictionary_service.py` 
+- Run Nginx server `sudo nginx -p /opt/botjagwar-front  -c /opt/botjagwar-frontnginx.conf`
+- Server should serve at port 8080
+
+## Authors
 
 - Rado Andrianjanahary
 
