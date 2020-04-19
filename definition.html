@@ -24,10 +24,10 @@
       <span class="badge badge-info" id='status_msg'>Status: {{message}}</span>
     </p>
     <p>    
-      <button class="btn btn-sm btn-primary" type="button" v-on:click='saveChanges'>Save 
+      <button class="btn btn btn-success" type="button" v-on:click='saveChanges'>Save 
         <span class="badge badge-light">{{new_words_version.length}}</span>
       </button>
-      <button class="btn btn-sm btn-secondary" type="button" v-on:click='cancelChanges'>Cancel</button>
+      <button class="btn btn btn-secondary" type="button" v-on:click='cancelChanges'>Cancel</button>
     </p>
     <h1>Uses</h1>
       {{words.length}} words referenced containing definition:<br>
