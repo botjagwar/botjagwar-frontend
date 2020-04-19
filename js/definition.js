@@ -14,6 +14,8 @@ var app = new Vue({
 			return words
 		}(),
 
+		message: 'Ready.',
+
 		deleted_words_association: [],
 		new_words_version: [],
 
@@ -36,15 +38,30 @@ var app = new Vue({
 
 		cancelChanges: function () {
 			// Reset changes
+			for (let i = 0; i < this.new_words_version.length; i++) {			
+				this.words.push(this.new_words_version[i]);
+			}			
 			this.new_words_version = [];
 		},
 
 		saveChanges: function () {
 			this.validateChanges()
 			console.log('save Changes called');
+			this.updateMesage('info', 'Saving...');
 			console.log(this.new_words_version);
-			this.prepareRequest();
-			this.sendRequest();
+			try {
+				this.prepareRequest();
+				this.sendRequest();
+				this.updateMesage('success', 'Success!');
+			}
+			catch (error) {
+				this.updateMesage('danger', 'An error occurred!');
+			}
+		},
+
+		updateMesage: function (msg_type, msg) {
+			this.message = msg;
+			document.getElementById('status_msg').className = "badge badge-" + msg_type;
 		},
 
 		validateChanges: function () {
@@ -76,8 +93,7 @@ var app = new Vue({
 				Put('/dict/entry/' + this.new_words_version[i].id + '/edit', JSON.stringify(this.new_words_version[i]));
 			}
 			// Reset changes
-			this.new_words_version = [];
-
+			this.new_words_version = [];			
 		},
 
 		deleteWord: function (word) {
@@ -96,7 +112,6 @@ var app = new Vue({
 						this.new_words_version.push(word_fetched);
 						break;
 					}
-
 				}
 			}
 		},
