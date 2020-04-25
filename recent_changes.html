@@ -18,7 +18,7 @@
 <body>
 <div style="margin:5%;" class="mr-md-3" id='app'>
 	<h1>New words</h1>
-	<table id="NewWordsTable" class='paginable table table-sm table-bordered' >
+	<table id="NewWordsTable" class='paginate table table-sm table-bordered' >
 		<thead>
 			<th>Change date</th>
 			<th>Word</th>
@@ -36,7 +36,7 @@
 		</tr>
 	</table>
 	<h1>New definitions</h1>
-	<table id="NewDefinitionsTable" class='paginable table table-sm table-bordered' >
+	<table id="NewDefinitionsTable" class='paginate table table-sm table-bordered' >
 		<thead>
 			<th>Last modified</th>
 			<th>Definitions</th>
@@ -60,7 +60,7 @@
 <script type="text/javascript">
 	// Basic example
 $(document).ready(function () {
-  $('.paginable').DataTable({
+  $('.paginate').DataTable({
     "paging": true // false to disable pagination (or any other option)
   });
   $('.dataTables_length').addClass('bs-select');

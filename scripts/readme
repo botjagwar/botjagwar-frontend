@@ -1,0 +1,2 @@
+Scripts in the folder serve the following purposes:
+- Sync definitions data from one botjagwar Postgresql DB to one another through PGREST API

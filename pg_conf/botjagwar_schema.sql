@@ -17,15 +17,6 @@ SET client_min_messages = warning;
 SET row_security = off;
 
 --
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
 -- Name: events_definition_changed_status; Type: TYPE; Schema: public; Owner: postgres
 --
 
@@ -196,29 +187,12 @@ ALTER SEQUENCE public.events_definition_changed_id_seq OWNED BY public.events_de
 CREATE TABLE public.events_rel_definition_word_deleted (
     definition bigint NOT NULL,
     word bigint NOT NULL,
-    date_changed date NOT NULL,
+    date_changed timestamp with time zone NOT NULL,
     comment text
 );
 
 
 ALTER TABLE public.events_rel_definition_word_deleted OWNER TO postgres;
-
---
--- Name: json_dictionary; Type: VIEW; Schema: public; Owner: postgres
---
-
-CREATE VIEW public.json_dictionary AS
-SELECT
-    NULL::text AS type,
-    NULL::bigint AS id,
-    NULL::character varying(150) AS word,
-    NULL::character varying(10) AS language,
-    NULL::character varying(15) AS part_of_speech,
-    NULL::timestamp with time zone AS last_modified,
-    NULL::json AS definitions;
-
-
-ALTER TABLE public.json_dictionary OWNER TO postgres;
 
 --
 -- Name: language; Type: TABLE; Schema: public; Owner: postgres
@@ -292,6 +266,35 @@ ALTER TABLE ONLY public.word ALTER COLUMN id SET DEFAULT nextval('public.word_id
 
 
 --
+-- Name: word idx_16449_primary; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.word
+    ADD CONSTRAINT idx_16449_primary PRIMARY KEY (id);
+
+
+--
+-- Name: json_dictionary; Type: MATERIALIZED VIEW; Schema: public; Owner: postgres
+--
+
+CREATE MATERIALIZED VIEW public.json_dictionary AS
+ SELECT 'Word'::text AS type,
+    wrd.id,
+    wrd.word,
+    wrd.language,
+    wrd.part_of_speech,
+    wrd.date_changed AS last_modified,
+    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions
+   FROM ((public.dictionary dct
+     LEFT JOIN public.word wrd ON ((wrd.id = dct.word)))
+     JOIN public.definitions defn ON ((defn.id = dct.definition)))
+  GROUP BY wrd.id
+  WITH NO DATA;
+
+
+ALTER TABLE public.json_dictionary OWNER TO postgres;
+
+--
 -- Name: definitions idx_16427_primary; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -313,14 +316,6 @@ ALTER TABLE ONLY public.events_definition_changed
 
 ALTER TABLE ONLY public.language
     ADD CONSTRAINT idx_16444_primary PRIMARY KEY (iso_code);
-
-
---
--- Name: word idx_16449_primary; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.word
-    ADD CONSTRAINT idx_16449_primary PRIMARY KEY (id);
 
 
 --
@@ -426,24 +421,6 @@ CREATE INDEX idx_16449_word_2 ON public.word USING gin (to_tsvector('simple'::re
 --
 
 CREATE INDEX idx_16449_word_3 ON public.word USING btree (word, language, part_of_speech);
-
-
---
--- Name: json_dictionary _RETURN; Type: RULE; Schema: public; Owner: postgres
---
-
-CREATE OR REPLACE VIEW public.json_dictionary AS
- SELECT 'Word'::text AS type,
-    wrd.id,
-    wrd.word,
-    wrd.language,
-    wrd.part_of_speech,
-    wrd.date_changed AS last_modified,
-    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions
-   FROM ((public.dictionary dct
-     LEFT JOIN public.word wrd ON ((wrd.id = dct.word)))
-     JOIN public.definitions defn ON ((defn.id = dct.definition)))
-  GROUP BY wrd.id;
 
 
 --
