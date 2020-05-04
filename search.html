@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head profile="http://gmpg.org/xfn/11">
     <title>Search - Botjagwar</title>
     <meta content="">
@@ -9,92 +9,69 @@
     <link rel="stylesheet" href="/css/style.css"/>
     <style>
     </style>
-  </head>
-  <script type="text/javascript" src='lib/vue.js'></script>
-  <script type="module" src='js/utils.js'></script>
-  <script type="module" src='js/search.js'></script>
-  <body>
-    <div id='header'>
-      <nav class="navbar navbar-expand-sm bg-light">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="index.html">Main page</a>
-          </li>
-          <li class="nav-item">            
-            <a class="nav-link" href="recent_changes.html">Recent Changes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="dictionary.html">Dictionary</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="word.html">Word</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="definition.html">Definition</a>
-          </li>                      	
-        </ul>
-        <form class="form-inline" method='get' action='search.html' style="position: absolute;right: 5px;">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1"><a href="search.html">Search</a></span>
-          </div>
-          <input class="form-control mr-sm-2" type="search" name='term' placeholder="" aria-label="">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Go</button>
-        </form>
-      </nav>      
-    </div>
-  <div style="margin:5%;" class="mr-md-3" id='app'>   
-    <h1>Words</h1>
-      {{words.length}} words referenced containing  searched term:<br>
-      <table id="linkedWords" class='paginable table table-sm table-bordered'>
-        <thead>
-          <th>ID</th>
-          <th>word</th>
-          <th>Part of speech</th>
-          <th>Language</th>
-          <th>Definition</th>
-          <th>Last modified</th>
-        </thead>
-        <tr v-for="word in words">
-            <td>{{word.id}}</td>
-            <td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
-            <td>{{word.part_of_speech}}</td>
-            <td>
-              <a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
-              <span class="badge badge-light"><a :href="'/dictionary.html?language=' + word.language">{{word.language}}</a>
+</head>
+<script type="text/javascript" src='lib/vue.js'></script>
+<script type="module" src='js/header.js'></script>
+<script type="module" src='js/utils.js'></script>
+<script type="module" src='js/search.js'></script>
+<body>
+<div id='app'>
+    <botjagwar-header></botjagwar-header>
+    <div style="margin:5%;">
+        <h1>Words</h1>
+        {{words.length}} words referenced containing searched term:<br>
+        <table id="linkedWords" class='paginable table table-sm table-bordered'>
+            <thead>
+            <th>ID</th>
+            <th>word</th>
+            <th>Part of speech</th>
+            <th>Language</th>
+            <th>Definition</th>
+            <th>Last modified</th>
+            </thead>
+            <tr v-for="word in words">
+                <td>{{word.id}}</td>
+                <td><a :href="'/word.html?word=' + word.id">{{word.word}}</a></td>
+                <td>{{word.part_of_speech}}</td>
+                <td>
+                    <a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
+                    <span class="badge badge-light"><a :href="'/dictionary.html?language=' + word.language">{{word.language}}</a>
               </span>
-            </td>
-            <td>
+                </td>
+                <td>
               <span v-for="definition in word.definitions">
               {{definition.definition}} ({{definition.language}})<br>
               </span>
-            </td>
-            <td>{{word.last_modified}}</td>
-        </tr>
-      </table>
-      <h1>Definitions</h1>
-      {{definitions.length}} Definitions found containing searched term:
-      <table id="LinkedDefinitions" class='paginable table table-sm table-bordered'>
-        <thead>
-          <th>ID</th>
-          <th>Definition</th>
-          <th>Language</th>>
-        </thead>
-        <tr v-for="definition in definitions">
-            <td>{{definition.id}}</td>
-            <td><a :href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a></td>
-            <td>
-              <a :href="'/dictionary.html?language=' + definition.definition_language">{{language_mapping[definition.definition_language]}}</a>
-              <span class="badge badge-light">
+                </td>
+                <td>{{word.last_modified}}</td>
+            </tr>
+        </table>
+        <h1>Definitions</h1>
+        {{definitions.length}} Definitions found containing searched term:
+        <table id="LinkedDefinitions" class='paginable table table-sm table-bordered'>
+            <thead>
+            <th>ID</th>
+            <th>Definition</th>
+            <th>Language</th>
+            >
+            </thead>
+            <tr v-for="definition in definitions">
+                <td>{{definition.id}}</td>
+                <td><a :href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a></td>
+                <td>
+                    <a :href="'/dictionary.html?language=' + definition.definition_language">{{language_mapping[definition.definition_language]}}</a>
+                    <span class="badge badge-light">
                 <a :href="'/dictionary.html?language=' + definition.definition_language">{{definition.definition_language}}</a>
               </span>
-            </td>          
-        </tr>
-      </table>
-  </div>
-  <script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
-  <script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
-  <script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
-  <script type="text/javascript">
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
+<script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
+<script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
+<script type="text/javascript">
   // Basic example
   $(document).ready(function () {
     $('.paginable').DataTable({
@@ -102,6 +79,7 @@
     });
     $('.dataTables_length').addClass('bs-select');
   });
-  </script>
-  </body>
+
+</script>
+</body>
 </html>

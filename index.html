@@ -1,64 +1,65 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
     <title>Index - Botjagwar</title>
     <meta content="">
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
-	<link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
-	<link rel="stylesheet" href="/css/style.css"/>
+    <link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
     <style>
     </style>
     <script type="text/javascript" src='lib/vue.js'></script>
 
-  	<!--<script type="text/javascript" src='axios.js'></script>-->
+    <!--<script type="text/javascript" src='axios.js'></script>-->
 </head>
 <script type="module" src="js/utils.js"></script>
 <script type="module" src='main.js'></script>
 <body>
-    <div id='header'>
-		<nav class="navbar navbar-expand-sm bg-light">
-		  <ul class="navbar-nav">
-			<li class="nav-item">
-			  <a class="nav-link" href="index.html">Main page</a>
-			</li>
-			<li class="nav-item">            
-			  <a class="nav-link" href="recent_changes.html">Recent Changes</a>
-			</li>
-			<li class="nav-item">
-			  <a class="nav-link" href="dictionary.html">Dictionary</a>
-			</li>
-			<li class="nav-item">
-			  <a class="nav-link" href="word.html">Word</a>
-			</li>
-			<li class="nav-item">
-			  <a class="nav-link" href="definition.html">Definition</a>
-			</li>                      	
-		  </ul>
-		  <form class="form-inline" style="position: absolute;right: 5px;">
-			<div class="input-group-prepend">
-			  <span class="input-group-text" id="basic-addon1"><a href="search.html">Search</a></span>
-			</div>
-			<input class="form-control mr-sm-2" type="search" placeholder="" aria-label="">
-			<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Go</button>
-		  </form>
-		</nav>      
-	  </div>
+<div id='header'>
+    <nav class="navbar navbar-expand-sm bg-light">
+        <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Main page</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="recent_changes.html">Recent Changes</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="dictionary.html">Dictionary</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="word.html">Word</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="definition.html">Definition</a>
+            </li>
+        </ul>
+        <form class="form-inline" style="position: absolute;right: 5px;">
+            <div class="input-group-prepend">
+                <span class="input-group-text" id="basic-addon1"><a href="search.html">Search</a></span>
+            </div>
+            <input class="form-control mr-sm-2" type="search" placeholder="" aria-label="">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Go</button>
+        </form>
+    </nav>
+</div>
 <div style="margin:5%;" class="mr-md-3" id='app'>
-	<span v-bind='isLoading' v-if='isLoading'>Loading</span>
-	<h1>{{title}}</h1>
-	<table id="languageTable" class='table table-sm table-bordered' >
-		<thead>
-			<th>Language</th>
-			<th>Language name</th>
-			<th>entries</th>
-		</thead>
-		<tr v-for="language in languages">
-			<td><a :href="'/dictionary.html?language=' + language.language">{{language.language}}</a></td>
-			<td><a :href="'/dictionary.html?language=' + language.language">{{language_mapping[language.language]}}</a></td>
-			<td>{{language.entries}}</td>
-		</tr>
-	</table>
+    <span v-bind='isLoading' v-if='isLoading'>Loading</span>
+    <h1>{{title}}</h1>
+    <table id="languageTable" class='table table-sm table-bordered'>
+        <thead>
+        <th>Language</th>
+        <th>Language name</th>
+        <th>entries</th>
+        </thead>
+        <tr v-for="language in languages">
+            <td><a :href="'/dictionary.html?language=' + language.language">{{language.language}}</a></td>
+            <td><a :href="'/dictionary.html?language=' + language.language">{{language_mapping[language.language]}}</a>
+            </td>
+            <td>{{language.entries}}</td>
+        </tr>
+    </table>
 </div>
 <script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
 <script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
@@ -71,6 +72,7 @@ $(document).ready(function () {
   });
   $('.dataTables_length').addClass('bs-select');
 });
+
 </script>
 
 </body>
