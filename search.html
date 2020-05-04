@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <head profile="http://gmpg.org/xfn/11">
-    <title>Definitions - Botjagwar</title>
+    <title>Search - Botjagwar</title>
     <meta content="">
     <link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
@@ -12,7 +12,7 @@
   </head>
   <script type="text/javascript" src='lib/vue.js'></script>
   <script type="module" src='js/utils.js'></script>
-  <script type="module" src='js/definition.js'></script>
+  <script type="module" src='js/search.js'></script>
   <body>
     <div id='header'>
       <nav class="navbar navbar-expand-sm bg-light">
@@ -37,36 +37,22 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1"><a href="search.html">Search</a></span>
           </div>
-          <input class="form-control mr-sm-2" type="search" placeholder="" aria-label="">
+          <input class="form-control mr-sm-2" type="search" name='term' placeholder="" aria-label="">
           <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Go</button>
         </form>
       </nav>      
     </div>
-  <div style="margin:5%;" class="mr-md-3" id='app'>
-      <h1>Definition in {{language_mapping[definition.language]}}</h1>
-    <p>
-      <div class="md-form amber-textarea active-amber-textarea">
-        <i class="fas fa-pencil-alt prefix"></i>
-        <textarea v-model="definition.definition" name='defn' class="md-textarea form-control"  rows="3">{{definition.definition}}</textarea>      
-      </div>        
-      <span class="badge badge-info" id='status_msg'>Status: {{message}}</span>
-    </p>
-    <p>    
-      <button class="btn btn btn-success" type="button" v-on:click='saveChanges'>Save 
-        <span class="badge badge-light">{{new_words_version.length}}</span>
-      </button>
-      <button class="btn btn btn-secondary" type="button" v-on:click='cancelChanges'>Cancel</button>
-    </p>
-    <h1>Uses</h1>
-      {{words.length}} words referenced containing definition:<br>
-      <table id="linkedWords" class='table table-sm table-bordered'>
+  <div style="margin:5%;" class="mr-md-3" id='app'>   
+    <h1>Words</h1>
+      {{words.length}} words referenced containing  searched term:<br>
+      <table id="linkedWords" class='paginable table table-sm table-bordered'>
         <thead>
           <th>ID</th>
           <th>word</th>
           <th>Part of speech</th>
           <th>Language</th>
+          <th>Definition</th>
           <th>Last modified</th>
-          <th>actions</th>
         </thead>
         <tr v-for="word in words">
             <td>{{word.id}}</td>
@@ -74,12 +60,34 @@
             <td>{{word.part_of_speech}}</td>
             <td>
               <a :href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
-              <span class="badge badge-light"><a :href="'/dictionary.html?language=' + word.language">{{word.language}}</a></span>
+              <span class="badge badge-light"><a :href="'/dictionary.html?language=' + word.language">{{word.language}}</a>
+              </span>
+            </td>
+            <td>
+              <span v-for="definition in word.definitions">
+              {{definition.definition}} ({{definition.language}})<br>
+              </span>
             </td>
             <td>{{word.last_modified}}</td>
+        </tr>
+      </table>
+      <h1>Definitions</h1>
+      {{definitions.length}} Definitions found containing searched term:
+      <table id="LinkedDefinitions" class='paginable table table-sm table-bordered'>
+        <thead>
+          <th>ID</th>
+          <th>Definition</th>
+          <th>Language</th>>
+        </thead>
+        <tr v-for="definition in definitions">
+            <td>{{definition.id}}</td>
+            <td><a :href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a></td>
             <td>
-              <button class="btn btn-sm btn-danger" v-bind="word" type="button" v-on:click='deleteWord(word)'>dissociate</button>
-            </td>
+              <a :href="'/dictionary.html?language=' + definition.definition_language">{{language_mapping[definition.definition_language]}}</a>
+              <span class="badge badge-light">
+                <a :href="'/dictionary.html?language=' + definition.definition_language">{{definition.definition_language}}</a>
+              </span>
+            </td>          
         </tr>
       </table>
   </div>
@@ -89,7 +97,7 @@
   <script type="text/javascript">
   // Basic example
   $(document).ready(function () {
-    $('#linkedWords').DataTable({
+    $('.paginable').DataTable({
       "paging": true // false to disable pagination (or any other option)
     });
     $('.dataTables_length').addClass('bs-select');

@@ -30,6 +30,10 @@ PostgREST provides an off-the-shelf, lightning-fast and almost complete REST API
 
 A PostgREST binary for is available in /bin folder, but feel free to download the most recent version at [PostgREST official repository](https://github.com/PostgREST/postgrest/releases)
 
+#### Nice to haves
+- pg-safeupdate: delete and update data safely so that dangerous queries (with no filters, e.g. delete statements) are blocked.
+- 
+
 ## Running it
 Set up backend services:
 - Download and install [botjagwar](https://github.com/radomd92/botjagwar)
