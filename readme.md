@@ -32,16 +32,49 @@ A PostgREST binary for is available in /bin folder, but feel free to download th
 
 #### Nice to haves
 - pg-safeupdate: delete and update data safely so that dangerous queries (with no filters, e.g. delete statements) are blocked.
-- 
 
 ## Running it
 Set up backend services:
 - Download and install [botjagwar](https://github.com/radomd92/botjagwar)
 - Download botjagwar-frontend repo
  - run `install.sh` as sudo
-- Run `dictionary_service.py`, using screen to keep it running: `screen python3 /opt/botjagwar/dictionary_service.py` 
-- Run Nginx server `sudo nginx -p /opt/botjagwar-front  -c /opt/botjagwar-frontnginx.conf`
+- Run `dictionary_service.py`, using screen to keep it running: `screen python3 /opt/botjagwar/dictionary_service.py`
+- Run Nginx server `sudo nginx -p /opt/botjagwar-front  -c /opt/botjagwar-front/config/nginx/nginx.conf`
 - Server should serve at port 8080
+- Run PostgREST backend using either the binary included in the repository herein, or downloaded from the official repository:
+  `./bin/postgrest ./config/postgres/postgrest.conf`
+- PostGREST should serve on port 8100
+
+## Navigating the web app
+You'll find below a short summary for each feature currently implemented in the web app.
+
+### Search
+Enter your term on the search bar, upon clicking on ENTER, you'll land on the search page containing the word matching the search string. You can use SQL wildcards to refine your search.
+You'll also find definitions that contains occurrences of the entered string.
+
+### Main page
+Contains a list of languages currently entered in the database.
+
+### Recent changes
+Contains the most recently added words and definitions.
+
+### Dictionary
+Basically all words of a given language. Please note that the number of returned results may be capped by the backend (you can lift this limit in the PostgREST configuration). Please note that languages containing a large number of words may slow down your browser and/or the database server. 
+
+### Words
+Visualise any word. To visualise all languages having the same term, click on the word.
+You can also delete and add definition as you see fit. Click on save to commit the changes to the database. 
+
+### Definitions
+Visualise a definition and see its uses in the database. Useful to perform fixes and visualise the impact of your change.
+
+## Technical notes
+- The main Dictionary currently makes use of a materialized view that must currently be updated manually. You can add a cron task to do the job. 
+- The materialized view was to speed up the rendering on slow computers at the expense of not being totally synchronous and space (DB size increase 10x initial space usage). 
+- On fast computers using e.g. SSD, replace the materialized view  with the normal view.
+
+Consequences:
+- the words page use vw_json_dictionary (normal view) whereas the dictionary page use json_dictionary (materialized view)
 
 ## Authors
 
