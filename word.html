@@ -17,13 +17,15 @@
 <div id='app'>
     <botjagwar-header></botjagwar-header>
     <div style="margin:5%;">
-        <h1>{{term}}</h1>
+        <h1><a v-bind:href="'?term=' + term">{{term}}</a></h1>
         <div v-for="word in words">
             <h2>
                 <a v-bind:href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
                 <span class="badge badge-light">{{word.language}}</span>
             </h2>
-            <span class="badge badge-light">#{{word.id}}</span>
+            <span class="badge badge-light">
+                <a v-bind:href="'?word=' + word.id">#{{word.id}}</a>
+            </span>
             <h3>{{pos_mapping[word.part_of_speech]}}</h3>
             <ol>
                 <li v-for="definition in word.definitions">

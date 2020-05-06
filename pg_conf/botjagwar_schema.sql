@@ -37,10 +37,10 @@ ALTER TYPE public.events_definition_changed_status OWNER TO postgres;
 CREATE FUNCTION public.add_pending_definition_change() RETURNS trigger
     LANGUAGE plpgsql
     AS $$BEGIN
-IF NEW.definition != OLD.definition 
+IF NEW.definition != OLD.definition
 THEN
         INSERT into events_definition_changed (
-            definition_id,   
+            definition_id,
             change_datetime,
             status,
             status_datetime,
@@ -291,6 +291,19 @@ CREATE MATERIALIZED VIEW public.json_dictionary AS
   GROUP BY wrd.id
   WITH NO DATA;
 
+
+CREATE VIEW public.vw_json_dictionary AS
+ SELECT 'Word'::text AS type,
+    wrd.id,
+    wrd.word,
+    wrd.language,
+    wrd.part_of_speech,
+    wrd.date_changed AS last_modified,
+    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions
+   FROM ((public.dictionary dct
+     LEFT JOIN public.word wrd ON ((wrd.id = dct.word)))
+     JOIN public.definitions defn ON ((defn.id = dct.definition)))
+  GROUP BY wrd.id
 
 ALTER TABLE public.json_dictionary OWNER TO postgres;
 

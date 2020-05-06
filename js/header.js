@@ -6,12 +6,12 @@ Vue.component('botjagwar-header', {
         <li class="nav-item">
         <a class="nav-link" href="index.html">Main page</a>
         </li>
-        <li class="nav-item">            
+        <li class="nav-item">
         <a class="nav-link" href="recent_changes.html">Recent Changes</a>
         </li>
         <li class="nav-item">
         <a class="nav-link" href="dictionary.html">Dictionary</a>
-        </li>                      	
+        </li>
     </ul>
     <form class="form-inline" method='get' action='search.html' style="position: absolute;right: 5px;">
         <div class="input-group-prepend">
@@ -26,7 +26,7 @@ Vue.component('botjagwar-header', {
 
     data: function () {
         return {
-            search_term: 'Your search'
+            search_term: ''
         }
     },
 

@@ -28,7 +28,7 @@ var app = new Vue({
 			// multiple elements
 			else if (params.get('term') != null) {
 				let word = params.get('term')
-				words = Get(location.origin + "/api/json_dictionary?word=like." + word);
+				words = Get(location.origin + "/api/vw_json_dictionary?word=like." + word);
 				return words;
 			}
 		}(),
@@ -77,9 +77,11 @@ var app = new Vue({
 
 		validateChanges: function () {
 			console.log('validate new definitions');
-			for (let i = 0; i < this.new_definitions.length; i++) {
-				if (!this.validateLanguage(this.new_definitions[i].language)) {
-					throw 'Language is not valid';
+			for (const word_id in this.new_definitions) {
+				for (let i = 0; i < this.new_definitions[word_id].length; i++) {
+					if (!this.validateLanguage(this.new_definitions[i].language)) {
+						throw 'Language is not valid';
+					}
 				}
 			}
 			console.log('validate edited definitions');
@@ -92,15 +94,17 @@ var app = new Vue({
 		prepareRequest: function () {
 			console.log('request prepared')
 			for (let i = 0; i < this.words.length; i++) {
-				for (let j = 0; j < this.word.definitions.length; j++) {
-					this.words[i].definitions[j].definition_language = this.word[i].definitions[j].language;
+				for (let j = 0; j < this.words[i].definitions.length; j++) {
+					this.words[i].definitions[j].definition_language = this.words[i].definitions[j].language;
 				}
 			}
 		},
 
 		sendRequest: function () {
 			console.log('request sent', this.word);
-			Put('/dict/entry/' +  this.word.id + '/edit', JSON.stringify(this.word));
+			for (let i = 0; i < this.words.length; i++) {
+				Put('/dict/entry/' +  this.words[i].id + '/edit', JSON.stringify(this.words[i]));
+			}
 			this.new_definitions = [];
 			this.edited_definitions.length = [];
 			this.definitions_to_delete = [];
