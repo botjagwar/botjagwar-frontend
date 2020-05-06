@@ -16,13 +16,11 @@ This repository contains the following things:
 
 ## Requirements
 
-### Minimal: botjagwar/dictionary_service.py
+### Minimal for dictionary_service.py and PostgREST
 
-Word storage engine. REST API required by the `wiktionary_irc.py` to store and get translations.
+dictionary_service.py is a word storage engine. REST API required by the `wiktionary_irc.py` to store and get translations.
 
 This API has been tested and used on MySQL (manual test), SQLite (automatic test) and PostgreSQL databases (manual test) thanks to SQLAlchemy. For the best performance and mostly if you want to use the frontend application, please use PostgreSQL.
-
-### Recommended: minimal + PostgREST
 
 dictionary_service specifies most routes and contains the code necessary to build and populate the botjagwar database. All CRUD features for the database are implemented thanks to SQLAlchemy ORM.
 
@@ -35,10 +33,12 @@ A PostgREST binary for is available in /bin folder, but feel free to download th
 
 ## Running it
 Set up backend services:
-- Download and install [botjagwar](https://github.com/radomd92/botjagwar)
+- Download, install and configure [botjagwar](https://github.com/radomd92/botjagwar)
+ - Database, for best performance, should be PostgreSQL
 - Download botjagwar-frontend repo
  - run `install.sh` as sudo
 - Run `dictionary_service.py`, using screen to keep it running: `screen python3 /opt/botjagwar/dictionary_service.py`
+- Service should run on 8001
 - Run Nginx server `sudo nginx -p /opt/botjagwar-front  -c /opt/botjagwar-front/config/nginx/nginx.conf`
 - Server should serve at port 8080
 - Run PostgREST backend using either the binary included in the repository herein, or downloaded from the official repository:
