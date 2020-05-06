@@ -38,3 +38,7 @@ export function fetch_language_mapping() {
 	}
 	return mappings
 }
+
+export function fetch_pos_mapping() {
+	return Get(location.origin + "/pos.json")
+}

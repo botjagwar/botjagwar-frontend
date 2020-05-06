@@ -1,36 +1,69 @@
-import { Get, Put, fetch_language_mapping } from './utils.js'
+import { Get, Put, fetch_language_mapping, fetch_pos_mapping } from './utils.js'
 
 var app = new Vue({
 	el: '#app',
 
 	data: {
-		word: function () {
+		term: function () {
 			let params = new URLSearchParams(location.search);
-			let word_id = params.get('word')
-			//let words = JSON.parse(Get(location.origin + "/wrd/" + word_id));
-			let words = Get(location.origin + "/wrd/" + word_id);
-			return words;
+			if (params.get('word') != null) {
+				let word_id = params.get('word')
+				let word = Get(location.origin + "/wrd/" + word_id)
+				return word.word;
+			}
+			else if (params.get('term') != null) {
+				return params.get('term')
+			}
+		}(),
+
+		words: function () {
+			let params = new URLSearchParams(location.search);
+			let words = {};
+			// single element
+			if (params.get('word') != null) {
+				let word_id = params.get('word')
+				words = Get(location.origin + "/wrd/" + word_id);
+				return [words];
+			}
+			// multiple elements
+			else if (params.get('term') != null) {
+				let word = params.get('term')
+				words = Get(location.origin + "/api/json_dictionary?word=like." + word);
+				return words;
+			}
 		}(),
 		new_definition: {},
-		new_definitions: [],
+		new_definitions: {},
 		edited_definitions: [],
 		definitions_to_delete: [],
 		message: 'Ready.',
 
+		pos_mapping: fetch_pos_mapping(),
 		language_mapping: fetch_language_mapping(),
 	},
 
 	methods: {
-		addDefinition: function () {
+		addDefinition: function (word_id) {
 			let new_definition = {
 				type: 'Definition',
 				definition: this.new_definition.definition,
 				language: this.new_definition.language
 			};
 
-			this.word.definitions.push(new_definition);
 			console.log('add Definition called: ' + this);
-			this.new_definitions.push(new_definition)
+			if (this.new_definitions[word_id] !== undefined) {
+				this.new_definitions[word_id].push(new_definition)
+			}
+			else {
+				this.new_definitions[word_id] = [new_definition]
+			}
+
+			for (let i = 0; i < this.words.length; i++) {
+				if (this.words[i].id === word_id) {
+					this.words[i].definitions.push(new_definition);
+					break;
+				}
+			}
 			this.new_definition = {};
 		},
 
@@ -58,8 +91,10 @@ var app = new Vue({
 
 		prepareRequest: function () {
 			console.log('request prepared')
-			for (let j = 0; j < this.word.definitions.length; j++) {
-				this.word.definitions[j].definition_language = this.word.definitions[j].language;
+			for (let i = 0; i < this.words.length; i++) {
+				for (let j = 0; j < this.word.definitions.length; j++) {
+					this.words[i].definitions[j].definition_language = this.word[i].definitions[j].language;
+				}
 			}
 		},
 
@@ -80,22 +115,29 @@ var app = new Vue({
 			}
 		},
 
-		deleteDefinition: function (definition) {
-			console.log('delete Definition called');
-			if (this.word.definitions.includes(definition)) {
-				let index = this.word.definitions.indexOf(definition);
-				if (index > -1) {
-				  this.word.definitions.splice(index, 1);
+		deleteDefinition: function (word_id, definition) {
+			console.log('delete Definition called ' + word_id + ', ' + definition);
+			let word = null;
+			for (let i = 0; i < this.words.length; i++) {
+				if (this.words[i].id === word_id) {
+					if (this.words[i].definitions.includes(definition)) {
+						let index = this.words[i].definitions.indexOf(definition);
+						if (index > -1) {
+							this.words[i].definitions.splice(index, 1);
+						}
+						console.log('deleted in definition list');
+					}
+					break;
 				}
-				console.log('deleted in definition list');
 			}
-
-			if (this.new_definitions.includes(definition)) {
-				let index = this.new_definitions.indexOf(definition);
-				if (index > -1) {
-				  this.new_definitions.splice(index, 1);
+			if (this.new_definitions[word_id] !== undefined) {
+				if (this.new_definitions[word_id].includes(definition)) {
+					let index = this.new_definitions[word_id].indexOf(definition);
+					if (index > -1) {
+					this.new_definitions[word_id].splice(index, 1);
+					}
+					console.log('deleted in new definition list');
 				}
-				console.log('deleted in new definition list');
 			}
 
 			if (!this.definitions_to_delete.includes(definition)) {
@@ -109,11 +151,10 @@ var app = new Vue({
 
 	computed: {
 		editCount: function () {
-			return (this.new_definitions.length +
-			this.edited_definitions.length +
-			this.definitions_to_delete.length);
+			return (
+				this.edited_definitions.length +
+				this.definitions_to_delete.length
+			);
 	    }
 	}
-
-
 });

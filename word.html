@@ -17,44 +17,31 @@
 <div id='app'>
     <botjagwar-header></botjagwar-header>
     <div style="margin:5%;">
-        <h1>{{word.word}}</h1>
-        <h2>
-            <a v-bind:href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a></h2>
-        <h3>{{word.part_of_speech}}</h3>
-        <table class='table table-sm table-bordered'>
-            <thead>
-            <th>ID</th>
-            <th>definition</th>
-            <th>language</th>
-            <th>actions</th>
-            </thead>
-            <tr v-for="definition in word.definitions">
-                <td>{{definition.id}}</td>
-                <td>
+        <h1>{{term}}</h1>
+        <div v-for="word in words">
+            <h2>
+                <a v-bind:href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
+                <span class="badge badge-light">{{word.language}}</span>
+            </h2>
+            <span class="badge badge-light">#{{word.id}}</span>
+            <h3>{{pos_mapping[word.part_of_speech]}}</h3>
+            <ol>
+                <li v-for="definition in word.definitions">
+                    <span class="badge badge-info">{{language_mapping[definition.language]}}</span>
                     <a v-if="definition.id" v-bind:href="'/definition.html?defid=' + definition.id">{{definition.definition}}</a>
-                    <span v-else>{{definition.definition}}</stan>
-                </td>
-                <td>({{language_mapping[definition.language]}})</td>
-                <td>
-                    <button type="button" class="btn btn-sm btn-danger" v-on:click='deleteDefinition(definition)'>
-                        delete
-                    </button>
-                </td>
-            </tr>
-            <hr>
-            <tr>
-                <td></td>
-                <td>
-                    <input v-model="new_definition.definition" @keyup.enter='addDefinition'
-                           placeholder="add definition">
-                </td>
-                <td>
-                    <input v-model="new_definition.language" @keyup.enter='addDefinition' placeholder="set language"
-                           value="mg">
-                    <button class="btn btn-primary btn-sm" type="button" v-on:click='addDefinition'>add</button>
-                </td>
-            </tr>
-        </table>
+                    <span v-else>{{definition.definition}}</span>
+                    <a><span class="badge badge-danger" v-on:click='deleteDefinition(word.id, definition)'>delete</span></a>
+                </li>
+            </ol>
+            <ul>
+                <input v-model="new_definition.definition" @keyup.enter='addDefinition(word.id)'
+                       placeholder="add definition">
+                <input v-model="new_definition.language" @keyup.enter='addDefinition(word.id)'
+                       placeholder="set language" value="mg">
+                <button class="btn btn-primary btn-sm" type="button" v-on:click='addDefinition(word.id)'>add</button>
+            </ul>
+
+        </div>
         <table class='table table-sm table-bordered'>
             <tr>
 
@@ -62,7 +49,7 @@
                     <button class="btn btn-success" type="button" v-on:click='saveChanges'>
                         Save <span class="badge badge-light">{{editCount}}</span></button>
                 </td>
-                <td>new definitions: {{new_definitions.length}}</td>
+                <td></td>
                 <td>to delete: {{definitions_to_delete.length}}</td>
                 <td>edited: {{edited_definitions.length}}</td>
             </tr>
