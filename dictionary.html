@@ -16,12 +16,35 @@
 <div id='app'>
     <botjagwar-header></botjagwar-header>
     <div style="margin:5%;">
-        <label for='language'>Language code</label>
-        <input v-model="language" @keyup.enter='fetchWords' placeholder="akz">
-        <button type="button" class="btn btn-primary btn-sm" v-on:click='fetchWords'>Fetch words from language</button>
 
         <h1>{{title}}</h1>
         Dictionary for <a v-bind:href="'/language.html?code=' + language">{{language_mapping[language]}}</a>
+        <form class="border border-secondary"
+            style="padding: 10px;
+                   margin-top: 10px;
+                   margin-bottom: 10px;
+                   border-radius: 4px 15px 4px 4px;">
+            <h2>Display options</h2>
+            <hr>
+            <table>
+                <tr style="padding: 10px; margin-top: 20px; margin-bottom: 10px;">
+                    <div class="form-group">
+                        <td>
+                            <label for='language'>Language code</label><br>
+                            <small>Language to display the dictionary for. Please enter the ISO language code.</small>
+                        </td>
+                        <td>
+                            <input v-model="language" @keyup.enter='fetchWords' placeholder="akz">
+                        </td>
+
+                    </div>
+                </tr>
+
+            </table>
+            <hr>
+            <button type="button" class="btn btn-primary btn-sm" v-on:click='fetchWords'>Fetch words from language</button>
+            <span id="fetch_spinner">Loading...</span>
+          </form>
         <table id='dictionaryTable' class='table table-sm table-bordered'>
             <thead>
             <th>ID</th>

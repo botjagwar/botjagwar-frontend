@@ -18,6 +18,7 @@
     <botjagwar-header></botjagwar-header>
     <div style="margin:5%;">
         <h1><a v-bind:href="'?term=' + term">{{term}}</a></h1>
+        <hr>
         <div v-for="word in words">
             <h2>
                 <a v-bind:href="'/dictionary.html?language=' + word.language">{{language_mapping[word.language]}}</a>
@@ -42,8 +43,8 @@
                        placeholder="set language" value="mg">
                 <button class="btn btn-primary btn-sm" type="button" v-on:click='addDefinition(word.id)'>add</button>
             </ul>
-
         </div>
+        <hr>
         <table class='table table-sm table-bordered'>
             <tr>
 

@@ -79,7 +79,7 @@ var app = new Vue({
 			console.log('validate new definitions');
 			for (const word_id in this.new_definitions) {
 				for (let i = 0; i < this.new_definitions[word_id].length; i++) {
-					if (!this.validateLanguage(this.new_definitions[i].language)) {
+					if (!this.validateLanguage(this.new_definitions[word_id][i].language)) {
 						throw 'Language is not valid';
 					}
 				}

@@ -20,29 +20,29 @@
 <div id='app'>
     <botjagwar-header></botjagwar-header>
     <div style="margin:5%;">
-
         <span v-bind='isLoading' v-if='isLoading'>Loading</span>
-        <h1>{{title}}</h1>
-        <table id="languageTable" class='table table-sm table-bordered'>
-            <thead>
-            <th>Language</th>
-            <th>Language name</th>
-            <th>entries</th>
-            </thead>
-            <tr v-for="language in languages">
-                <td><a :href="'/dictionary.html?language=' + language.language">{{language.language}}</a></td>
-                <td>
-                    <a :href="'/dictionary.html?language=' + language.language">{{language_mapping[language.language]}}</a>
-                </td>
-                <td>{{language.entries}}</td>
-            </tr>
-        </table>
+        <h1>Language list</h1>
+        <p>
+            You will find the list of all languages currently in use in the local dictionary below.<br/>
+            Click on the langugage links for a dictionary in that language.
+        </p>        
+        <p>
+            Currently only the malagasy view is supported.
+        </p>
+        <span v-for="language in languages" style="margin-right:20px">
+            <span class="badge badge-light">
+                <a :href="'/dictionary.html?language=' + language.language">{{language.language}}</a>
+            </span>
+            <a :href="'/dictionary.html?language=' + language.language">{{language_mapping[language.language]}}</a>            
+            ({{language.entries}})
+            
+        </span>        
     </div>
 </div>
-<script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
-<script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
+<!-- <script type="text/javascript" src='lib/jquery-3.4.1.js'></script>-->
+<!-- <script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script> -->
 <script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 	// Basic example
 $(document).ready(function () {
   $('#languageTable').DataTable({
@@ -50,10 +50,7 @@ $(document).ready(function () {
   });
   $('.dataTables_length').addClass('bs-select');
 });
-
-
-
 </script>
-
+-->
 </body>
 </html>

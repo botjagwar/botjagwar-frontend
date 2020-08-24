@@ -11,12 +11,13 @@ var app = new Vue({
 		language_mapping: fetch_language_mapping(),
 		isLoading: false,
 		words: function () {
+			$('#fetch_spinner').show();
 			let params = new URLSearchParams(location.search);
 			let id = params.get('language');
 			let words = Get(location.origin + "/dict/" + id );
+			$('#fetch_spinner').hide();
 			return words
 		}(),
-
 
 		changes: [],
 		title:'Dictionary',
@@ -27,11 +28,10 @@ var app = new Vue({
 			this.language = language;
 		},
 
-
 		fetchWords: function () {
-			this.isLoading = true;
+			$('#fetch_spinner').show();
 			this.words = Get(location.origin + "/dict/" + this.language);
-			this.isLoading = false;
+			$('#fetch_spinner').hide();
 		},
 	}
 });
