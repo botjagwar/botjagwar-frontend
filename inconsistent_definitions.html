@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" prefix="og: http://ogp.me/ns#">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Inconsistent definitions - Botjagwar</title>
+    <meta content="">
+    <link rel="stylesheet" href="lib/datatable/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+<script type="text/javascript" src='lib/vue.js'></script>
+<script type="module" src='js/header.js'></script>
+<script type="module" src="js/utils.js"></script>
+<script type="module" src='js/inconsistent_definitions.js'></script>
+<body>
+<div id='app'>
+    <botjagwar-header></botjagwar-header>
+    <div style="margin:5%;">
+
+        <h1>{{title}}</h1>
+        Dictionary for <a v-bind:href="'/language.html?code=' + language">{{language_mapping[language]}}</a>
+
+        <table id='dictionaryTable' class='table table-sm table-bordered'>
+            <thead>
+                <td>w_id</td>
+                <td>w1</td>
+                <td>w1_pos</td>
+                <td>w1_lang</td>
+                <td>w1_defn</td>
+                <td>d_id</td>
+                <td>d_lang</td>
+                <td>w2</td>
+                <td>w2_pos</td>
+            </thead>
+            <tr v-for="word in words">
+                <td>{{word.w_id}}</td>
+                <td><a :href="'word.html?term=' + word.w1">{{word.w1}}</a></td>
+                <td>{{word.w1_pos}}</td>
+                <td>{{word.w1_lang}}</td>
+                <td><a :href="'definition.html?id=' + word.w1_defn">{{word.w1_defn}}</a></td>
+                <td>{{word.d_id}}</td>
+                <td>{{word.d_lang}}</td>
+                <td><a :href="'word.html?term=' + word.w2">{{word.w2}}</a></td>
+                <td>{{word.w2_pos}}</td>
+            </tr>
+        </table>
+    </div>
+</div>
+<script type="text/javascript" src='lib/jquery-3.4.1.js'></script>
+<script type="text/javascript" src='lib/datatable/jquery.dataTables.min.js'></script>
+<script type="text/javascript" src='lib/bootstrap/js/bootstrap.js'></script>
+<script type="text/javascript">
+// Basic example
+$(document).ready(function () {
+  $('#dictionaryTable').DataTable({
+    "paging": true // false to disable pagination (or any other option)
+  });
+  $('.dataTables_length').addClass('bs-select');
+});
+
+</script>
+</body>
+</html>

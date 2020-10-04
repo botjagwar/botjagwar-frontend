@@ -12,6 +12,9 @@ Vue.component('botjagwar-header', {
         <li class="nav-item">
         <a class="nav-link" href="dictionary.html">Dictionary</a>
         </li>
+        <li class="nav-item">
+        <a class="nav-link" href="inconsistent_definitions.html">Inc. definitions</a>
+        </li>
     </ul>
     <form class="form-inline" method='get' action='search.html' style="position: absolute;right: 5px;">
         <div class="input-group-prepend">
