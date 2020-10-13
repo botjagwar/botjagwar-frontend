@@ -13,21 +13,21 @@ from (
         d.definition_language as d_lang,
         (select
             word
-        from
+         from
             word w2
-        where
+         where
             w2.word = d.definition
             and w2.language = d.definition_language
-        limit 1
+         limit 1
         ) as w2,
         (select
             part_of_speech
-        from
+         from
             word w2
-        where
+         where
             w2.word = d.definition
             and w2.language = d.definition_language
-        limit 1
+         limit 1
         ) as w2_pos
 
     FROM
@@ -39,5 +39,9 @@ from (
 where
     w2 is not NULL
     and w2_pos != w1_pos
-    and ((w1_pos = 'ana' and w2_pos in ('mpam-ana', 'mat'))
-      or ((w1_pos in ('mat', 'mpam-ana') and w2_pos = 'ana')))
+    and (
+        (w1_pos = 'ana'
+         and w2_pos in ('mpam-ana', 'mat'))
+      or (
+        (w1_pos in ('mat', 'mpam-ana')
+         and w2_pos = 'ana')))
