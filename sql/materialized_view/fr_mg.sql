@@ -1,4 +1,4 @@
-create view vw_fr_mg as
+create materialized view fr_mg as
 select
     word,
     part_of_speech,
