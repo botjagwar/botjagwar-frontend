@@ -274,6 +274,9 @@ CREATE VIEW public.convergent_translations AS
     st_en.definition AS en_definition,
     st_fr.definition_id AS fr_definition_id,
     st_fr.definition AS fr_definition,
+    ( SELECT min(definitions.id) AS min
+           FROM public.definitions
+          WHERE (((definitions.definition_language)::text = 'mg'::text) AND ((definitions.definition)::text = (st_en.suggested_definition)::text))) AS mg_definition_id,
     st_en.suggested_definition
    FROM (public.suggested_translations_fr_mg st_fr
      JOIN public.suggested_translations_en_mg st_en ON ((st_fr.word_id = st_en.word_id)))
