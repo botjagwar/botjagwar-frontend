@@ -38,7 +38,7 @@ CREATE FUNCTION public.add_new_association() RETURNS trigger
     LANGUAGE plpgsql
     AS $$BEGIN
 
-insert into 
+insert into
     new_associations (word, definition, associated_on, status)
 values
     (NEW.word, NEW.definition, current_timestamp, 'PENDING');
@@ -56,10 +56,10 @@ ALTER FUNCTION public.add_new_association() OWNER TO postgres;
 CREATE FUNCTION public.add_pending_definition_change() RETURNS trigger
     LANGUAGE plpgsql
     AS $$BEGIN
-IF NEW.definition != OLD.definition 
+IF NEW.definition != OLD.definition
 THEN
         INSERT into events_definition_changed (
-            definition_id,   
+            definition_id,
             change_datetime,
             status,
             status_datetime,
