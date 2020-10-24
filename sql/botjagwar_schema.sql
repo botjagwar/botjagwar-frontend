@@ -114,6 +114,19 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: additional_word_information; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.additional_word_information (
+    word_id bigint NOT NULL,
+    type character varying(50) NOT NULL,
+    information character varying(250) NOT NULL
+);
+
+
+ALTER TABLE public.additional_word_information OWNER TO postgres;
+
+--
 -- Name: definitions; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -514,7 +527,8 @@ SELECT
     NULL::character varying(10) AS language,
     NULL::character varying(15) AS part_of_speech,
     NULL::timestamp with time zone AS last_modified,
-    NULL::json AS definitions;
+    NULL::json AS definitions,
+    NULL::json AS additional_data;
 
 
 ALTER TABLE public.vw_json_dictionary OWNER TO postgres;
@@ -539,6 +553,23 @@ ALTER TABLE public.word_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.word_id_seq OWNED BY public.word.id;
 
+
+--
+-- Name: word_with_additional_data; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.word_with_additional_data AS
+SELECT
+    NULL::text AS type,
+    NULL::bigint AS id,
+    NULL::character varying(150) AS word,
+    NULL::character varying(10) AS language,
+    NULL::character varying(15) AS part_of_speech,
+    NULL::timestamp with time zone AS last_modified,
+    NULL::json AS additional_data;
+
+
+ALTER TABLE public.word_with_additional_data OWNER TO postgres;
 
 --
 -- Name: definitions id; Type: DEFAULT; Schema: public; Owner: postgres
@@ -580,7 +611,11 @@ CREATE MATERIALIZED VIEW public.json_dictionary AS
     wrd.language,
     wrd.part_of_speech,
     wrd.date_changed AS last_modified,
-    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions
+    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions,
+    ( SELECT array_to_json(array_agg(json_build_object('type', 'AdditionalData', 'data_type', awi.type, 'data', awi.information))) AS array_to_json
+           FROM public.additional_word_information awi
+          WHERE (awi.word_id = wrd.id)
+          GROUP BY awi.word_id) AS additional_data
    FROM ((public.dictionary dct
      LEFT JOIN public.word wrd ON ((wrd.id = dct.word)))
      JOIN public.definitions defn ON ((defn.id = dct.definition)))
@@ -728,24 +763,24 @@ CREATE INDEX idx_16449_word_3 ON public.word USING btree (word, language, part_o
 
 
 --
--- Name: idx_jsondict; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_additional_word_information_information; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_jsondict ON public.json_dictionary USING btree (word);
-
-
---
--- Name: idx_jsondict_ids; Type: INDEX; Schema: public; Owner: postgres
---
-
-CREATE INDEX idx_jsondict_ids ON public.json_dictionary USING btree (id);
+CREATE INDEX idx_additional_word_information_information ON public.additional_word_information USING btree (information);
 
 
 --
--- Name: idx_jsondict_language; Type: INDEX; Schema: public; Owner: postgres
+-- Name: idx_additional_word_information_type; Type: INDEX; Schema: public; Owner: postgres
 --
 
-CREATE INDEX idx_jsondict_language ON public.json_dictionary USING btree (language);
+CREATE INDEX idx_additional_word_information_type ON public.additional_word_information USING btree (type);
+
+
+--
+-- Name: idx_additional_word_information_word_id; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX idx_additional_word_information_word_id ON public.additional_word_information USING btree (word_id);
 
 
 --
@@ -784,6 +819,23 @@ CREATE INDEX idx_suggested_translations_en_mg_word ON public.suggested_translati
 
 
 --
+-- Name: word_with_additional_data _RETURN; Type: RULE; Schema: public; Owner: postgres
+--
+
+CREATE OR REPLACE VIEW public.word_with_additional_data AS
+ SELECT 'Word'::text AS type,
+    wrd.id,
+    wrd.word,
+    wrd.language,
+    wrd.part_of_speech,
+    wrd.date_changed AS last_modified,
+    array_to_json(array_agg(json_build_object('type', 'AdditionalData', 'data_type', awi.type, 'data', awi.information))) AS additional_data
+   FROM (public.word wrd
+     JOIN public.additional_word_information awi ON ((awi.word_id = wrd.id)))
+  GROUP BY wrd.id;
+
+
+--
 -- Name: vw_json_dictionary _RETURN; Type: RULE; Schema: public; Owner: postgres
 --
 
@@ -794,7 +846,11 @@ CREATE OR REPLACE VIEW public.vw_json_dictionary AS
     wrd.language,
     wrd.part_of_speech,
     wrd.date_changed AS last_modified,
-    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions
+    array_to_json(array_agg(json_build_object('type', 'Definition', 'id', defn.id, 'definition', defn.definition, 'language', defn.definition_language, 'last_modified', defn.date_changed))) AS definitions,
+    ( SELECT array_to_json(array_agg(json_build_object('type', 'AdditionalData', 'data_type', awi.type, 'data', awi.information))) AS array_to_json
+           FROM public.additional_word_information awi
+          WHERE (awi.word_id = wrd.id)
+          GROUP BY awi.word_id) AS additional_data
    FROM ((public.dictionary dct
      LEFT JOIN public.word wrd ON ((wrd.id = dct.word)))
      JOIN public.definitions defn ON ((defn.id = dct.definition)))
