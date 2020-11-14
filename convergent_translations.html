@@ -22,26 +22,26 @@
 
         <table id='dictionaryTable' class='table table-sm table-bordered'>
             <thead>
-                <td>w_id</td>
-                <td>w1</td>
-                <td>w1_pos</td>
-                <td>w1_lang</td>
-                <td>w1_defn</td>
-                <td>d_id</td>
-                <td>d_lang</td>
-                <td>w2</td>
-                <td>w2_pos</td>
+                <th>Word</th>
+                <th>Language</th>
+                <th>Part of speech</th>
+                <th>en_definition</th>
+                <th>fr_definition</th>
+                <th>Suggested definition</th>
+                <th>Action</th>
             </thead>
             <tr v-for="word in words">
-                <td>{{word.w_id}}</td>
-                <td><a :href="'word.html?term=' + word.w1">{{word.w1}}</a></td>
-                <td>{{word.w1_pos}}</td>
-                <td>{{word.w1_lang}}</td>
-                <td><a :href="'definition.html?id=' + word.w1_defn">{{word.w1_defn}}</a></td>
-                <td>{{word.d_id}}</td>
-                <td>{{word.d_lang}}</td>
-                <td><a :href="'word.html?term=' + word.w2">{{word.w2}}</a></td>
-                <td>{{word.w2_pos}}</td>
+                <td><a :href="'word.html?term=' + word.word">{{word.word}}</a></td>
+                <td>{{word.language}}</td>
+                <td>{{word.part_of_speech}}</td>
+                <td><a :href="'definition.html?defid=' + word.en_definition_id">{{word.en_definition}}</a></td>
+                <td><a :href="'definition.html?defid=' + word.fr_definition_id">{{word.fr_definition}}</a></td>
+                <td><a :href="'definition.html?defid=' + word.mg_definition_id">{{word.suggested_definition}}</a></td>
+                <td>
+                    <button class="btn btn-sm btn-success" v-bind="word" type="button" v-on:click='associate(word)'>
+                        associate
+                    </button>
+                </td>
             </tr>
         </table>
     </div>
