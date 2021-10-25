@@ -8,7 +8,7 @@ var app = new Vue({
 			let params = new URLSearchParams(location.search);
 			let id = params.get('defid');
 			let defn = Get(location.origin + "/defw/" + id );
-			let words = defn[0].words[0];
+			let words = defn[0].words;
 			//console.log('words');
 			//console.log(words);
 			return words
@@ -38,9 +38,9 @@ var app = new Vue({
 
 		cancelChanges: function () {
 			// Reset changes
-			for (let i = 0; i < this.new_words_version.length; i++) {			
+			for (let i = 0; i < this.new_words_version.length; i++) {
 				this.words.push(this.new_words_version[i]);
-			}			
+			}
 			this.new_words_version = [];
 		},
 
@@ -93,7 +93,7 @@ var app = new Vue({
 				Put('/dict/entry/' + this.new_words_version[i].id + '/edit', JSON.stringify(this.new_words_version[i]));
 			}
 			// Reset changes
-			this.new_words_version = [];			
+			this.new_words_version = [];
 		},
 
 		deleteWord: function (word) {
