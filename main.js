@@ -6,7 +6,7 @@ var app = new Vue({
 	data: {
 		language_mapping: fetch_language_mapping(),
 		languages: function () {
-			let words = Get("/dict/list");
+			let words = Get("/static/list");
 			return words
 		}(),
 	},
