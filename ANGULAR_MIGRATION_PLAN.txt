@@ -1,0 +1,199 @@
+Botjagwar Frontend Angular + TypeScript Migration Plan
+=======================================================
+
+Goal
+----
+Replace the current multi-page static Vue/JS frontend with a maintainable Angular TypeScript SPA while preserving behavior and backend contracts.
+
+Current state summary
+---------------------
+- UI is split into multiple HTML entry points (`index.html`, `dictionary.html`, `word.html`, etc.).
+- Each page has its own Vue app under `js/*.js`.
+- Data access uses synchronous `XMLHttpRequest` wrappers in `js/utils.js`.
+- Backend API contract is already stable and should be preserved.
+
+Why this cannot be completed safely in one pass
+----------------------------------------------
+A full rewrite requires:
+1) bootstrapping an Angular workspace,
+2) defining shared models/services,
+3) porting all views and edit workflows,
+4) validating route/query-param behaviors,
+5) adding tests and final parity checks.
+
+Doing all of this in a single pass without iterative validation risks regressions in editing flows (`word`, `definition`) and search behavior.
+
+Migration strategy (reusable incremental plan)
+---------------------------------------------
+
+Phase 0 - Freeze behavior and map routes (1-2 days)
+- Capture baseline behavior for each current page:
+  - Main (`index.html` / `main.js`)
+  - Search (`search.html` / `js/search.js`)
+  - Dictionary (`dictionary.html` / `js/dictionary.js`)
+  - Word (`word.html` / `js/word.js`)
+  - Definition (`definition.html` / `js/definition.js`)
+  - Recent changes (`recent_changes.html` / `js/recentchanges.js`)
+  - Inconsistent definitions (`inconsistent_definitions.html` / `js/inconsistent_definitions.js`)
+  - Convergent translations (`convergent_translations.html` / `js/convergent_translations.js`)
+- Build a route/query-param matrix (examples: `?language=`, `?term=`, `?word=`, `?defid=`).
+- Record current API endpoints in use.
+
+Deliverable:
+- `docs/angular/parity-checklist.md`
+
+Phase 1 - Angular foundation (1 day)
+- Create Angular app with strict TypeScript settings.
+- Add routing and a shell layout with reusable header/nav.
+- Add global styles by porting `css/style.css` and Bootstrap usage.
+
+Recommended commands:
+- `npx @angular/cli new botjagwar-ng --routing --style=css --strict`
+- `npm install bootstrap`
+
+Deliverables:
+- Angular workspace
+- App shell and shared layout
+
+Phase 2 - Shared API layer + models (1-2 days)
+- Replace synchronous XHR with `HttpClient` + Observables.
+- Create typed interfaces:
+  - `Language`
+  - `Definition`
+  - `Word`
+  - `RecentChange`
+- Implement services:
+  - `ApiClientService` (base HTTP wrapper)
+  - `LanguageService` (`/langs`, language mapping)
+  - `DictionaryService` (`/dict/*`, `/api/*` read endpoints)
+  - `WordEditService` (`/dict/entry/:id/edit`, `/defn/:id/edit`)
+- Preserve endpoint URLs exactly to avoid backend changes.
+
+Deliverables:
+- `src/app/core/services/*.ts`
+- `src/app/core/models/*.ts`
+
+Phase 3 - Read-only views first (2-3 days)
+Port pages with mostly read behavior before edit-heavy pages:
+1) Main page (languages)
+2) Search page
+3) Dictionary page
+4) Recent changes page
+5) Inconsistent definitions page
+6) Convergent translations page
+
+For each page:
+- Create component + route
+- Read query params with `ActivatedRoute`
+- Replace direct DOM spinner toggles with component state (`isLoading`)
+
+Deliverables:
+- `src/app/features/*` read-only features
+- route parity with legacy pages
+
+Phase 4 - Edit workflows (high risk) (2-4 days)
+Port mutation-heavy pages carefully:
+1) Word page (`js/word.js` behavior)
+   - add/delete definitions
+   - in-memory staged edits
+   - save to `/dict/entry/:id/edit`
+2) Definition page (`js/definition.js` behavior)
+   - dissociate words from definition
+   - save definition + linked word changes
+
+Hard requirements:
+- Preserve existing save payload shapes (`definition_language` mapping logic).
+- Implement form validation (language code, required text).
+- Add optimistic UI or explicit save states.
+
+Deliverables:
+- `WordPageComponent`
+- `DefinitionPageComponent`
+- Unit tests for edit reducers/helpers
+
+Phase 5 - Compatibility and rollout (1-2 days)
+- Introduce Nginx rewrite rules to route SPA paths to `index.html`.
+- Keep old static pages behind a feature flag or alternate path during transition.
+- Verify all deep links.
+
+Suggested rollout:
+- `/ng/*` serves Angular app first.
+- Once parity is validated, promote Angular app to root.
+
+Deliverables:
+- deployment config update
+- fallback/rollback switch
+
+Phase 6 - Testing and parity sign-off (1-2 days)
+Test matrix:
+- Route/query-param behavior for each legacy page pattern.
+- API call parity (same endpoints and core parameters).
+- Edit flows for word/definition pages.
+- Empty/loading/error states.
+
+Recommended test stack:
+- Unit: Jasmine/Karma (or Jest if preferred)
+- E2E: Playwright/Cypress
+
+Exit criteria:
+- All parity checklist items pass.
+- Legacy pages can be removed.
+
+Proposed Angular project structure
+---------------------------------
+- `src/app/core/`
+  - `models/`
+  - `services/`
+  - `interceptors/`
+- `src/app/shared/`
+  - `components/header/`
+  - `pipes/language-name.pipe.ts`
+- `src/app/features/`
+  - `main/`
+  - `search/`
+  - `dictionary/`
+  - `word/`
+  - `definition/`
+  - `recent-changes/`
+  - `inconsistent-definitions/`
+  - `convergent-translations/`
+
+Legacy-to-Angular mapping guide
+-------------------------------
+- `main.js` -> `features/main/main-page.component.ts`
+- `js/search.js` -> `features/search/search-page.component.ts`
+- `js/dictionary.js` -> `features/dictionary/dictionary-page.component.ts`
+- `js/word.js` -> `features/word/word-page.component.ts`
+- `js/definition.js` -> `features/definition/definition-page.component.ts`
+- `js/recentchanges.js` -> `features/recent-changes/recent-changes-page.component.ts`
+- `js/inconsistent_definitions.js` -> `features/inconsistent-definitions/inconsistent-definitions-page.component.ts`
+- `js/convergent_translations.js` -> `features/convergent-translations/convergent-translations-page.component.ts`
+- `js/header.js` -> `shared/components/header/header.component.ts`
+- `js/utils.js` -> `core/services/api-client.service.ts` + domain services
+
+Risk register
+-------------
+1) Sync XHR -> async RxJS conversion can change rendering order.
+   Mitigation: page-by-page conversion and snapshot tests.
+2) Query-param compatibility regressions.
+   Mitigation: explicit route contract tests.
+3) Edit payload shape drift.
+   Mitigation: contract tests against real backend/staging.
+4) Very large dictionary results can impact SPA performance.
+   Mitigation: add pagination/virtual scroll in Angular implementation.
+
+Immediate next action items
+---------------------------
+1) Approve this plan as baseline.
+2) Start Phase 1 and scaffold Angular workspace in a new folder (`botjagwar-ng`) while keeping legacy app intact.
+3) Implement Phase 2 services and port Main + Search first for a quick parity demo.
+
+Reusable tracking template
+--------------------------
+Use this checklist each session:
+- [ ] Route parity updated
+- [ ] API endpoint parity validated
+- [ ] UI parity reviewed
+- [ ] Unit tests added/updated
+- [ ] E2E smoke tests passing
+- [ ] Rollback path verified
