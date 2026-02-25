@@ -1,0 +1,7 @@
+.navbar-nav {
+  gap: 0.5rem;
+}
+
+.input-group-text a {
+  text-decoration: none;
+}
