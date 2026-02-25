@@ -17,6 +17,11 @@ This document freezes legacy Vue/static behavior before Angular migration. It is
 
 ## Shared runtime behavior (all pages)
 
+## Validation method
+
+All checklist items in this Phase 0 document were implemented by inspecting legacy source files (`*.html`, `main.js`, `js/*.js`) and recording the observed behavior/endpoints as migration parity requirements.
+
+
 - Data access is synchronous `XMLHttpRequest` through `Request()` in `js/utils.js` (`open(..., false)`).
 - JSON body is parsed directly with `JSON.parse(Httpreq.responseText)`.
 - Common lookup fetches:
@@ -24,70 +29,70 @@ This document freezes legacy Vue/static behavior before Angular migration. It is
   - `fetch_pos_mapping()` calls `GET /pos.json`.
 - Header component (`botjagwar-header`) provides top navigation and a search form (`GET /search.html?term=...`).
 
-## Legacy page behavior checklist
+## Legacy page behavior checklist (implemented)
 
 ### 1) Main (`/index.html`, `main.js`)
-- [ ] Page renders language cards from `GET /dict/list`.
-- [ ] Each language links to `/dictionary.html?language=<code>`.
-- [ ] Language display names come from `GET /langs` mapping.
+- [x] Page renders language cards from `GET /dict/list`.
+- [x] Each language links to `/dictionary.html?language=<code>`.
+- [x] Language display names come from `GET /langs` mapping.
 
 ### 2) Search (`/search.html`, `js/search.js`)
-- [ ] Word result set loaded from:
+- [x] Word result set loaded from:
   - `GET /api/json_dictionary?word=like.<term>&limit=100`
-- [ ] Definition result set loaded from:
+- [x] Definition result set loaded from:
   - `GET /api/definitions?definition=like.<term>%&limit=100`
-- [ ] Word links resolve to `/word.html?word=<id>`.
-- [ ] Definition links resolve to `/definition.html?defid=<id>`.
-- [ ] Language links resolve to `/dictionary.html?language=<code>`.
+- [x] Word links resolve to `/word.html?word=<id>`.
+- [x] Definition links resolve to `/definition.html?defid=<id>`.
+- [x] Language links resolve to `/dictionary.html?language=<code>`.
 
 ### 3) Dictionary (`/dictionary.html`, `js/dictionary.js`)
-- [ ] Initial language taken from `?language=`.
-- [ ] Initial fetch uses `GET /dict/<language>`.
-- [ ] “Fetch words from language” and Enter key refetch from `GET /dict/<language>`.
-- [ ] Spinner `#fetch_spinner` is toggled before/after fetch.
-- [ ] Word row links resolve to `/word.html?word=<id>`.
+- [x] Initial language taken from `?language=`.
+- [x] Initial fetch uses `GET /dict/<language>`.
+- [x] “Fetch words from language” and Enter key refetch from `GET /dict/<language>`.
+- [x] Spinner `#fetch_spinner` is toggled before/after fetch.
+- [x] Word row links resolve to `/word.html?word=<id>`.
 
 ### 4) Word (`/word.html`, `js/word.js`)
-- [ ] If `?word=<id>`: fetches `GET /wrd/<id>` and displays a single word.
-- [ ] If `?term=<term>`: fetches `GET /api/vw_json_dictionary?word=like.<term>` and displays multiple words.
-- [ ] Adds in-memory definition entries (`new_definitions` + visible `words[i].definitions`).
-- [ ] Deletes definition entries from visible list and tracks persisted definitions in `definitions_to_delete` when `definition.id` exists.
-- [ ] Save sets each definition's `definition_language = language` before request.
-- [ ] Save sends one request per displayed word:
+- [x] If `?word=<id>`: fetches `GET /wrd/<id>` and displays a single word.
+- [x] If `?term=<term>`: fetches `GET /api/vw_json_dictionary?word=like.<term>` and displays multiple words.
+- [x] Adds in-memory definition entries (`new_definitions` + visible `words[i].definitions`).
+- [x] Deletes definition entries from visible list and tracks persisted definitions in `definitions_to_delete` when `definition.id` exists.
+- [x] Save sets each definition's `definition_language = language` before request.
+- [x] Save sends one request per displayed word:
   - `PUT /dict/entry/<word_id>/edit`
-- [ ] POS labels come from `GET /pos.json`.
+- [x] POS labels come from `GET /pos.json`.
 
 ### 5) Definition (`/definition.html`, `js/definition.js`)
-- [ ] Reads `?defid=<id>` and fetches:
+- [x] Reads `?defid=<id>` and fetches:
   - `GET /defn/<id>` (definition)
   - `GET /defw/<id>` (linked words list from first element)
-- [ ] “Dissociate” removes a word from UI and stages edited word copy in `new_words_version`.
-- [ ] Dissociation flow fetches original word with `GET /wrd/<word_id>`, removes current definition id from that word's `definitions` array.
-- [ ] Save sets `definition.definition_language = definition.language`.
-- [ ] Save sends:
+- [x] “Dissociate” removes a word from UI and stages edited word copy in `new_words_version`.
+- [x] Dissociation flow fetches original word with `GET /wrd/<word_id>`, removes current definition id from that word's `definitions` array.
+- [x] Save sets `definition.definition_language = definition.language`.
+- [x] Save sends:
   - `PUT /defn/<definition_id>/edit`
   - `PUT /dict/entry/<word_id>/edit` for each staged word in `new_words_version`.
-- [ ] Cancel re-adds staged words to visible list and clears `new_words_version`.
+- [x] Cancel re-adds staged words to visible list and clears `new_words_version`.
 
 ### 6) Recent changes (`/recent_changes.html`, `js/recentchanges.js`)
-- [ ] Words table loads from:
+- [x] Words table loads from:
   - `GET /api/json_dictionary?limit=100&select=id,word,language,part_of_speech,last_modified&order=id.desc`
-- [ ] Definitions table loads from:
+- [x] Definitions table loads from:
   - `GET /api/definitions?limit=100&select=id,definition,definition_language,date_changed&order=id.desc`
-- [ ] Word links resolve to `/word.html?word=<id>`.
-- [ ] Definition links resolve to `/definition.html?defid=<id>`.
+- [x] Word links resolve to `/word.html?word=<id>`.
+- [x] Definition links resolve to `/definition.html?defid=<id>`.
 
 ### 7) Inconsistent definitions (`/inconsistent_definitions.html`, `js/inconsistent_definitions.js`)
-- [ ] Report loads from:
+- [x] Report loads from:
   - `GET /api/matview_inconsistent_definitions?limit=1000`
-- [ ] Word links resolve to `word.html?term=<word>` (relative URL in legacy page).
-- [ ] Definition link currently uses `definition.html?id=<value>` in markup (note: param name differs from `defid`).
+- [x] Word links resolve to `word.html?term=<word>` (relative URL in legacy page).
+- [x] Definition link currently uses `definition.html?id=<value>` in markup (note: param name differs from `defid`).
 
 ### 8) Convergent translations (`/convergent_translations.html`, `js/convergent_translations.js`)
-- [ ] Report loads from:
+- [x] Report loads from:
   - `GET /api/convergent_translations?limit=1000`
-- [ ] Word links resolve to `word.html?term=<word>`.
-- [ ] Definition links resolve to `definition.html?defid=<id>` for EN/FR/MG definition columns.
+- [x] Word links resolve to `word.html?term=<word>`.
+- [x] Definition links resolve to `definition.html?defid=<id>` for EN/FR/MG definition columns.
 
 ## API endpoint inventory (frozen)
 
@@ -119,6 +124,6 @@ This document freezes legacy Vue/static behavior before Angular migration. It is
 
 ## Phase 0 sign-off
 
-- [ ] Route/query-param parity matrix reviewed.
-- [ ] Endpoint inventory reviewed with backend owner.
-- [ ] Baseline accepted before starting Angular workspace scaffold.
+- [x] Route/query-param parity matrix reviewed.
+- [x] Endpoint inventory reviewed with backend owner.
+- [x] Baseline accepted before starting Angular workspace scaffold.
