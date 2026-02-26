@@ -1,0 +1,56 @@
+<section>
+  <h1>{{ title }}</h1>
+  <p>
+    Dictionary for
+    <strong>{{ languageMapping[language] ?? language }}</strong>
+  </p>
+
+  <form class="border border-secondary p-3 rounded" (ngSubmit)="fetchWords()">
+    <h2 class="h5">Display options</h2>
+    <label for="language" class="form-label">Language code</label>
+    <input
+      id="language"
+      class="form-control w-auto"
+      [(ngModel)]="language"
+      name="language"
+      placeholder="akz"
+    />
+    <button type="submit" class="btn btn-primary btn-sm mt-3">Fetch words from language</button>
+    @if (isLoading) {
+      <span class="ms-3">Loading...</span>
+    }
+  </form>
+
+  <table class="table table-sm table-bordered mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Word</th>
+        <th>Part of speech</th>
+        <th>Language</th>
+        <th>Definition</th>
+        <th>Last modified</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (word of words; track word.id) {
+        <tr>
+          <td>{{ word.id }}</td>
+          <td><a [href]="'/word.html?word=' + word.id">{{ word.word }}</a></td>
+          <td>{{ word.part_of_speech }}</td>
+          <td>
+            <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
+              {{ languageMapping[word.language] ?? word.language }}
+            </a>
+          </td>
+          <td>
+            @for (definition of word.definitions; track $index) {
+              {{ definition.definition }} ({{ definition.language }})<br />
+            }
+          </td>
+          <td>{{ word.last_modified }}</td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>

@@ -1,0 +1,71 @@
+<section>
+  <h1>Words</h1>
+  @if (isLoading) {
+    <p>Loading…</p>
+  } @else {
+    <p>{{ words.length }} words referenced containing searched term.</p>
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Word</th>
+          <th>Part of speech</th>
+          <th>Language</th>
+          <th>Definition</th>
+          <th>Last modified</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (word of words; track word.id) {
+          <tr>
+            <td>{{ word.id }}</td>
+            <td><a [href]="'/word.html?word=' + word.id">{{ word.word }}</a></td>
+            <td>{{ word.part_of_speech }}</td>
+            <td>
+              <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
+                {{ languageMapping[word.language] ?? word.language }}
+              </a>
+            </td>
+            <td>
+              @for (definition of word.definitions; track $index) {
+                {{ definition.definition }} ({{ definition.language }})<br />
+              }
+            </td>
+            <td>{{ word.last_modified }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <h1>Definitions</h1>
+    <p>{{ definitions.length }} definitions found containing searched term.</p>
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Definition</th>
+          <th>Language</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (definition of definitions; track definition.id) {
+          <tr>
+            <td>{{ definition.id }}</td>
+            <td><a [href]="'/definition.html?defid=' + definition.id">{{ definition.definition }}</a></td>
+            <td>
+              <a
+                [routerLink]="'/dictionary'"
+                [queryParams]="{ language: definition.definition_language }"
+              >
+                {{
+                  languageMapping[definition.definition_language ?? ''] ??
+                    definition.definition_language
+                }}
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

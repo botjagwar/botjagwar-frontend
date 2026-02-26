@@ -1,0 +1,67 @@
+<section>
+  <h1>Recent changes</h1>
+
+  @if (isLoading) {
+    <p>Loading…</p>
+  } @else {
+    <h2 class="h4">Words</h2>
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Word</th>
+          <th>Part of speech</th>
+          <th>Language</th>
+          <th>Last modified</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (word of words; track word.id) {
+          <tr>
+            <td>{{ word.id }}</td>
+            <td><a [href]="'/word.html?word=' + word.id">{{ word.word }}</a></td>
+            <td>{{ word.part_of_speech }}</td>
+            <td>
+              <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
+                {{ languageMapping[word.language] ?? word.language }}
+              </a>
+            </td>
+            <td>{{ word.last_modified }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <h2 class="h4">Definitions</h2>
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Definition</th>
+          <th>Language</th>
+          <th>Date changed</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (definition of definitions; track definition.id) {
+          <tr>
+            <td>{{ definition.id }}</td>
+            <td><a [href]="'/definition.html?defid=' + definition.id">{{ definition.definition }}</a></td>
+            <td>
+              <a
+                [routerLink]="'/dictionary'"
+                [queryParams]="{ language: definition.definition_language }"
+              >
+                {{
+                  languageMapping[definition.definition_language ?? ''] ??
+                    definition.definition_language
+                }}
+              </a>
+            </td>
+            <td>{{ definition.date_changed }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

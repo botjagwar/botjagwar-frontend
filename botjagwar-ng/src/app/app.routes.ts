@@ -1,54 +1,36 @@
 import { Routes } from '@angular/router';
 
-import { HomePageComponent } from './features/home-page/home-page.component';
-import { LegacyRouteStubComponent } from './features/legacy-route-stub/legacy-route-stub.component';
+import { ConvergentTranslationsPageComponent } from './features/convergent-translations-page/convergent-translations-page.component';
+import { DictionaryPageComponent } from './features/dictionary-page/dictionary-page.component';
+import { InconsistentDefinitionsPageComponent } from './features/inconsistent-definitions-page/inconsistent-definitions-page.component';
+import { MainPageComponent } from './features/main-page/main-page.component';
+import { RecentChangesPageComponent } from './features/recent-changes-page/recent-changes-page.component';
+import { SearchPageComponent } from './features/search-page/search-page.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: HomePageComponent
+    component: MainPageComponent
   },
   {
     path: 'search',
-    component: LegacyRouteStubComponent,
-    data: {
-      title: 'Search',
-      description: 'Search view placeholder. Query parameter support will be added in Phase 3.'
-    }
+    component: SearchPageComponent
   },
   {
     path: 'dictionary',
-    component: LegacyRouteStubComponent,
-    data: {
-      title: 'Dictionary',
-      description: 'Dictionary view placeholder. Porting is planned in the read-only migration phase.'
-    }
+    component: DictionaryPageComponent
   },
   {
     path: 'recent-changes',
-    component: LegacyRouteStubComponent,
-    data: {
-      title: 'Recent Changes',
-      description: 'Recent changes view placeholder. Porting is planned in the read-only migration phase.'
-    }
+    component: RecentChangesPageComponent
   },
   {
     path: 'inconsistent-definitions',
-    component: LegacyRouteStubComponent,
-    data: {
-      title: 'Inconsistent Definitions',
-      description:
-        'Inconsistent definitions view placeholder. Porting is planned in the read-only migration phase.'
-    }
+    component: InconsistentDefinitionsPageComponent
   },
   {
     path: 'convergent-translations',
-    component: LegacyRouteStubComponent,
-    data: {
-      title: 'Convergent Translations',
-      description:
-        'Convergent translations view placeholder. Porting is planned in the read-only migration phase.'
-    }
+    component: ConvergentTranslationsPageComponent
   },
   {
     path: '**',
