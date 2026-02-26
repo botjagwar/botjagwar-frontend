@@ -9,7 +9,7 @@ import { RecentChangesPageComponent } from './features/recent-changes-page/recen
 import { SearchPageComponent } from './features/search-page/search-page.component';
 import { WordPageComponent } from './features/word-page/word-page.component';
 
-export const legacyToModernRouteMap: Readonly<Record<string, string>> = {
+export const legacyToModernRouteMap = {
   'index.html': '',
   'search.html': 'search',
   'dictionary.html': 'dictionary',
@@ -18,9 +18,14 @@ export const legacyToModernRouteMap: Readonly<Record<string, string>> = {
   'recent_changes.html': 'recent-changes',
   'inconsistent_definitions.html': 'inconsistent-definitions',
   'convergent_translations.html': 'convergent-translations'
-};
+} as const;
 
-const legacyRoutes: Routes = Object.entries(legacyToModernRouteMap).map(([legacyPath, modernPath]) => ({
+export type LegacyRoutePath = keyof typeof legacyToModernRouteMap;
+export type ModernRoutePath = (typeof legacyToModernRouteMap)[LegacyRoutePath];
+
+const legacyRoutes: Routes = (Object.entries(legacyToModernRouteMap) as Array<
+  [LegacyRoutePath, ModernRoutePath]
+>).map(([legacyPath, modernPath]) => ({
   path: legacyPath,
   redirectTo: modernPath,
   pathMatch: 'full'
