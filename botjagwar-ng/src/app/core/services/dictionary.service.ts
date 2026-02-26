@@ -2,6 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { Definition } from '../models/definition.model';
+import {
+  ConvergentTranslationReportRow,
+  InconsistentDefinitionReportRow,
+  RecentWordChange
+} from '../models/dictionary-report.model';
 import { Word } from '../models/word.model';
 import { ApiClientService } from './api-client.service';
 
@@ -47,8 +52,8 @@ export class DictionaryService {
     return this.api.get<Array<{ words: Word[] }>>(`/defw/${definitionId}`);
   }
 
-  getRecentWordChanges(limit = 100): Observable<Word[]> {
-    return this.api.get<Word[]>('/api/json_dictionary', {
+  getRecentWordChanges(limit = 100): Observable<RecentWordChange[]> {
+    return this.api.get<RecentWordChange[]>('/api/json_dictionary', {
       limit,
       select: 'id,word,language,part_of_speech,last_modified',
       order: 'id.desc'
@@ -63,12 +68,14 @@ export class DictionaryService {
     });
   }
 
-  getInconsistentDefinitions(limit = 1000): Observable<Word[]> {
-    return this.api.get<Word[]>('/api/matview_inconsistent_definitions', { limit });
+  getInconsistentDefinitions(limit = 1000): Observable<InconsistentDefinitionReportRow[]> {
+    return this.api.get<InconsistentDefinitionReportRow[]>('/api/matview_inconsistent_definitions', {
+      limit
+    });
   }
 
-  getConvergentTranslations(limit = 1000): Observable<Word[]> {
-    return this.api.get<Word[]>('/api/convergent_translations', { limit });
+  getConvergentTranslations(limit = 1000): Observable<ConvergentTranslationReportRow[]> {
+    return this.api.get<ConvergentTranslationReportRow[]>('/api/convergent_translations', { limit });
   }
 
   getPartOfSpeechMapping(): Observable<Record<string, string>> {

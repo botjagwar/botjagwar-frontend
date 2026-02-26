@@ -3,6 +3,11 @@ import { provideHttpClientTesting, HttpTestingController } from '@angular/common
 import { TestBed } from '@angular/core/testing';
 
 import { DictionaryService } from './dictionary.service';
+import {
+  ConvergentTranslationReportRow,
+  InconsistentDefinitionReportRow,
+  RecentWordChange
+} from '../models/dictionary-report.model';
 
 describe('DictionaryService', () => {
   let service: DictionaryService;
@@ -24,10 +29,30 @@ describe('DictionaryService', () => {
   it('calls key read-only endpoints with expected query params', () => {
     service.searchWords('cat', 50).subscribe();
     service.searchDefinitions('desc', 25).subscribe();
-    service.getRecentWordChanges(10).subscribe();
+
+    const recentWordChanges: RecentWordChange[] = [
+      { id: 1, word: 'cat', language: 'eng', part_of_speech: 'noun', last_modified: '2024-01-01' }
+    ];
+    service.getRecentWordChanges(10).subscribe((rows) => {
+      expect(rows).toEqual(recentWordChanges);
+      expect(rows[0].word).toBe('cat');
+    });
+
     service.getRecentDefinitionChanges(20).subscribe();
-    service.getInconsistentDefinitions(1000).subscribe();
-    service.getConvergentTranslations(500).subscribe();
+
+    const inconsistentRows: InconsistentDefinitionReportRow[] = [{ w_id: 12, w1: 'foo', w2: 'bar' }];
+    service.getInconsistentDefinitions(1000).subscribe((rows) => {
+      expect(rows).toEqual(inconsistentRows);
+      expect(rows[0].w_id).toBe(12);
+    });
+
+    const convergentRows: ConvergentTranslationReportRow[] = [
+      { en_definition_id: 21, fr_definition_id: 34, suggested_definition: 'sample definition' }
+    ];
+    service.getConvergentTranslations(500).subscribe((rows) => {
+      expect(rows).toEqual(convergentRows);
+      expect(rows[0].suggested_definition).toContain('sample');
+    });
 
     const wordsRequest = httpMock.expectOne(
       `${window.location.origin}/api/json_dictionary?word=like.cat&limit=50`
@@ -45,7 +70,7 @@ describe('DictionaryService', () => {
       `${window.location.origin}/api/json_dictionary?limit=10&select=id,word,language,part_of_speech,last_modified&order=id.desc`
     );
     expect(recentWordsRequest.request.method).toBe('GET');
-    recentWordsRequest.flush([]);
+    recentWordsRequest.flush(recentWordChanges);
 
     const recentDefsRequest = httpMock.expectOne(
       `${window.location.origin}/api/definitions?limit=20&select=id,definition,definition_language,date_changed&order=id.desc`
@@ -57,13 +82,13 @@ describe('DictionaryService', () => {
       `${window.location.origin}/api/matview_inconsistent_definitions?limit=1000`
     );
     expect(inconsistentRequest.request.method).toBe('GET');
-    inconsistentRequest.flush([]);
+    inconsistentRequest.flush(inconsistentRows);
 
     const convergentRequest = httpMock.expectOne(
       `${window.location.origin}/api/convergent_translations?limit=500`
     );
     expect(convergentRequest.request.method).toBe('GET');
-    convergentRequest.flush([]);
+    convergentRequest.flush(convergentRows);
   });
 
   it('calls lookup endpoints that use path params', () => {
