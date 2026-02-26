@@ -1,0 +1,62 @@
+<section>
+  <h1>Definition in {{ languageMapping[definition.language ?? ''] ?? definition.language }}</h1>
+
+  <div class="mb-3">
+    <label for="definition-text" class="form-label">Definition</label>
+    <textarea
+      id="definition-text"
+      class="form-control"
+      rows="3"
+      [(ngModel)]="definition.definition"
+      name="definitionText"
+    ></textarea>
+  </div>
+
+  <p>
+    <span class="badge" [ngClass]="{
+      'text-bg-info': saveState === 'idle' || saveState === 'saving',
+      'text-bg-success': saveState === 'success',
+      'text-bg-danger': saveState === 'error'
+    }">Status: {{ message }}</span>
+  </p>
+
+  <p>
+    <button class="btn btn-success me-2" type="button" (click)="saveChanges()" [disabled]="saveState === 'saving'">
+      Save <span class="badge text-bg-light">{{ stagedWordUpdates.length }}</span>
+    </button>
+    <button class="btn btn-secondary" type="button" (click)="cancelChanges()">Cancel</button>
+  </p>
+
+  <h2>Uses</h2>
+  <p>{{ words.length }} words referenced containing definition.</p>
+  <table class="table table-sm table-bordered">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Word</th>
+        <th>Part of speech</th>
+        <th>Language</th>
+        <th>Last modified</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (word of words; track word.id) {
+        <tr>
+          <td>{{ word.id }}</td>
+          <td><a [routerLink]="'/word'" [queryParams]="{ word: word.id }">{{ word.word }}</a></td>
+          <td>{{ word.part_of_speech }}</td>
+          <td>
+            <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
+              {{ languageMapping[word.language] ?? word.language }}
+            </a>
+          </td>
+          <td>{{ word.last_modified }}</td>
+          <td>
+            <button class="btn btn-sm btn-danger" type="button" (click)="deleteWord(word)">dissociate</button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</section>
