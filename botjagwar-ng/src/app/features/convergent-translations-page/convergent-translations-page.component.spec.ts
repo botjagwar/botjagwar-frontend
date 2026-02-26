@@ -44,4 +44,12 @@ describe('ConvergentTranslationsPageComponent', () => {
     expect(component.words.length).toBe(1);
     expect(component.isLoading).toBe(false);
   });
+
+  it('builds legacy-compatible word links with id-first fallback behavior', () => {
+    const component = fixture.componentInstance;
+
+    expect(component.getWordLink(7, 'ignored value')).toBe('/word.html?word=7');
+    expect(component.getWordLink(undefined, 'cat and dog')).toBe('/word.html?term=cat%20and%20dog');
+    expect(component.getWordLink(undefined, undefined)).toBe('/word.html?term=');
+  });
 });

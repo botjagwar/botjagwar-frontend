@@ -42,4 +42,15 @@ describe('InconsistentDefinitionsPageComponent', () => {
     expect(component.words.length).toBe(1);
     expect(component.isLoading).toBe(false);
   });
+
+  it('builds legacy-compatible links with defid query param and encoded term fallback', () => {
+    const component = fixture.componentInstance;
+
+    expect(component.getWordLink(4, 'feline test')).toBe('/word.html?word=4');
+    expect(component.getWordLink(undefined, 'feline test')).toBe('/word.html?term=feline%20test');
+    expect(component.getDefinitionLink(9, 'unused')).toBe('/definition.html?defid=9');
+    expect(component.getDefinitionLink(undefined, 'with space')).toBe(
+      '/definition.html?defid=with%20space'
+    );
+  });
 });
