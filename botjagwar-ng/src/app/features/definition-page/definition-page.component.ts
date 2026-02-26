@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { Subject, forkJoin } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { Definition } from '../../core/models/definition.model';
 import { Word } from '../../core/models/word.model';
@@ -16,7 +17,7 @@ import { WordEditService } from '../../core/services/word-edit.service';
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './definition-page.component.html'
 })
-export class DefinitionPageComponent implements OnInit {
+export class DefinitionPageComponent implements OnInit, OnDestroy {
   words: Word[] = [];
   definition: Definition & { id: number } = { id: 0, definition: '', language: '' };
   stagedWordUpdates: Word[] = [];
@@ -24,6 +25,7 @@ export class DefinitionPageComponent implements OnInit {
   message = 'Ready.';
   languageMapping: Partial<Record<string, string>> = {};
   private definitionId = 0;
+  private readonly destroy$ = new Subject<void>();
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -33,11 +35,14 @@ export class DefinitionPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.languageService.getLanguageMapping().subscribe((mapping) => (this.languageMapping = mapping));
+    this.languageService
+      .getLanguageMapping()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((mapping) => (this.languageMapping = mapping));
 
-    this.route.queryParamMap.subscribe((params) => {
+    this.route.queryParamMap.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.definitionId = Number(params.get('defid'));
-      if (!this.definitionId) {
+      if (!Number.isFinite(this.definitionId) || this.definitionId <= 0) {
         return;
       }
 
@@ -45,16 +50,20 @@ export class DefinitionPageComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   deleteWord(word: Word): void {
     this.words = this.words.filter((item) => item.id !== word.id);
 
-    this.dictionaryService.getWordById(word.id).subscribe((fetchedWord) => {
-      const updatedWord = {
-        ...fetchedWord,
-        definitions: fetchedWord.definitions.filter((item) => item.id !== this.definition.id)
-      };
-      this.stagedWordUpdates = [...this.stagedWordUpdates.filter((item) => item.id !== word.id), updatedWord];
-    });
+    this.dictionaryService
+      .getWordById(word.id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((fetchedWord) => {
+        this.stageWordUpdate(word.id, fetchedWord);
+      });
   }
 
   cancelChanges(): void {
@@ -82,32 +91,55 @@ export class DefinitionPageComponent implements OnInit {
     forkJoin([
       this.wordEditService.updateDefinition(normalizedDefinition),
       ...this.stagedWordUpdates.map((word) => this.wordEditService.updateWord(normalizeWordForSave(word)))
-    ]).subscribe({
-      next: () => {
-        this.stagedWordUpdates = [];
-        this.saveState = 'success';
-        this.message = 'Success!';
-      },
-      error: () => {
-        this.saveState = 'error';
-        this.message = 'An error occurred!';
-      }
-    });
+    ])
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.stagedWordUpdates = [];
+          this.saveState = 'success';
+          this.message = 'Success!';
+        },
+        error: () => {
+          this.saveState = 'error';
+          this.message = 'An error occurred!';
+        }
+      });
   }
 
   private reloadDefinitionData(): void {
-    this.dictionaryService.getDefinitionWords(this.definitionId).subscribe((definitionWords) => {
-      this.words = definitionWords[0]?.words ?? [];
-    });
+    forkJoin({
+      definitionWords: this.dictionaryService.getDefinitionWords(this.definitionId),
+      definitions: this.dictionaryService.getDefinitionById(this.definitionId)
+    })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ definitionWords, definitions }) => {
+          this.words = definitionWords[0]?.words ?? [];
 
-    this.dictionaryService.getDefinitionById(this.definitionId).subscribe((definitions) => {
-      const definition = definitions[0];
-      this.definition = {
-        id: definition.id ?? this.definitionId,
-        definition: definition.definition,
-        language: definition.language,
-        definition_language: definition.definition_language
-      };
-    });
+          const definition = definitions[0];
+          this.definition = {
+            id: definition.id ?? this.definitionId,
+            definition: definition.definition,
+            language: definition.language,
+            definition_language: definition.definition_language
+          };
+        },
+        error: () => {
+          this.saveState = 'error';
+          this.message = 'Could not load definition details.';
+        }
+      });
+  }
+
+  private stageWordUpdate(wordId: number, fullWord: Word): void {
+    const updatedWord: Word = {
+      ...fullWord,
+      definitions: fullWord.definitions.filter((item) => item.id !== this.definition.id)
+    };
+
+    this.stagedWordUpdates = [
+      ...this.stagedWordUpdates.filter((item) => item.id !== wordId),
+      updatedWord
+    ];
   }
 }

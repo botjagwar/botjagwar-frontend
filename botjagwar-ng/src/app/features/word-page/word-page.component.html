@@ -42,14 +42,16 @@
 
       <div class="d-flex gap-2 align-items-center">
         <input
-          [(ngModel)]="newDefinition.definition"
-          name="newDefinitionText"
+          [ngModel]="newDefinitionDrafts[word.id]?.definition ?? ''"
+          (ngModelChange)="updateDefinitionDraft(word.id, 'definition', $event)"
+          [name]="'newDefinitionText-' + word.id"
           class="form-control"
           placeholder="add definition"
         />
         <input
-          [(ngModel)]="newDefinition.language"
-          name="newDefinitionLanguage"
+          [ngModel]="newDefinitionDrafts[word.id]?.language ?? ''"
+          (ngModelChange)="updateDefinitionDraft(word.id, 'language', $event)"
+          [name]="'newDefinitionLanguage-' + word.id"
           class="form-control"
           placeholder="set language"
         />

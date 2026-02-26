@@ -24,6 +24,7 @@ describe('WordPageComponent', () => {
   };
 
   beforeEach(async () => {
+    queryParamMap$.next(convertToParamMap({ word: '1' }));
     dictionaryService.getWordById.mockReturnValue(
       of({
         id: 1,
@@ -32,6 +33,7 @@ describe('WordPageComponent', () => {
         definitions: [{ id: 9, definition: 'cat', language: 'eng' }]
       })
     );
+    dictionaryService.getWordsByTerm.mockReturnValue(of([]));
     dictionaryService.getPartOfSpeechMapping.mockReturnValue(of({ n: 'noun' }));
     languageService.getLanguageMapping.mockReturnValue(of({ eng: 'English', mg: 'Malagasy' }));
     wordEditService.updateWord.mockReturnValue(of({}));
@@ -55,9 +57,31 @@ describe('WordPageComponent', () => {
     expect(fixture.componentInstance.words).toHaveLength(1);
   });
 
+  it('uses term search when word query param is invalid', () => {
+    queryParamMap$.next(convertToParamMap({ word: 'abc', term: 'saka' }));
+
+    expect(dictionaryService.getWordsByTerm).toHaveBeenCalledWith('saka');
+    expect(dictionaryService.getWordById).not.toHaveBeenCalledWith(Number.NaN);
+  });
+
+  it('keeps new-definition drafts scoped per word', () => {
+    const component = fixture.componentInstance;
+    component.words = [
+      ...component.words,
+      { id: 2, word: 'alika', language: 'mg', definitions: [] }
+    ];
+
+    component.updateDefinitionDraft(1, 'definition', 'cat');
+    component.updateDefinitionDraft(2, 'definition', 'dog');
+
+    expect(component.newDefinitionDrafts[1].definition).toBe('cat');
+    expect(component.newDefinitionDrafts[2].definition).toBe('dog');
+  });
+
   it('stages and removes new definitions before save', () => {
     const component = fixture.componentInstance;
-    component.newDefinition = { definition: 'feline', language: 'eng' };
+    component.updateDefinitionDraft(1, 'definition', 'feline');
+    component.updateDefinitionDraft(1, 'language', 'eng');
 
     component.addDefinition(1);
     expect(component.words[0].definitions).toHaveLength(2);
