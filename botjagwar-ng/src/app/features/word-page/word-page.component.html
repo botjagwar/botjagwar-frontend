@@ -1,0 +1,84 @@
+<section>
+  <h1><a [routerLink]="'/word'" [queryParams]="{ term }">{{ term }}</a></h1>
+
+  @if (isLoading) {
+    <p>Loading...</p>
+  }
+
+  @for (word of words; track word.id) {
+    <article class="mb-4 border-bottom pb-3">
+      <h2>
+        <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
+          {{ languageMapping[word.language] ?? word.language }}
+        </a>
+        <span class="badge text-bg-light">{{ word.language }}</span>
+      </h2>
+      <span class="badge text-bg-light">#{{ word.id }}</span>
+      <h3>{{ posMapping[word.part_of_speech ?? ''] ?? word.part_of_speech }}</h3>
+
+      <ol>
+        @for (definition of word.definitions; track $index) {
+          <li>
+            <span class="badge text-bg-info me-2">{{
+              languageMapping[definition.language ?? ''] ?? definition.language
+            }}</span>
+            @if (definition.id) {
+              <a [routerLink]="'/definition'" [queryParams]="{ defid: definition.id }">{{
+                definition.definition
+              }}</a>
+            } @else {
+              <span>{{ definition.definition }}</span>
+            }
+            <button
+              type="button"
+              class="btn btn-sm btn-outline-danger ms-2"
+              (click)="deleteDefinition(word.id, definition)"
+            >
+              delete
+            </button>
+          </li>
+        }
+      </ol>
+
+      <div class="d-flex gap-2 align-items-center">
+        <input
+          [ngModel]="newDefinitionDrafts[word.id]?.definition ?? ''"
+          (ngModelChange)="updateDefinitionDraft(word.id, 'definition', $event)"
+          [name]="'newDefinitionText-' + word.id"
+          class="form-control"
+          placeholder="add definition"
+        />
+        <input
+          [ngModel]="newDefinitionDrafts[word.id]?.language ?? ''"
+          (ngModelChange)="updateDefinitionDraft(word.id, 'language', $event)"
+          [name]="'newDefinitionLanguage-' + word.id"
+          class="form-control"
+          placeholder="set language"
+        />
+        <button class="btn btn-primary btn-sm" type="button" (click)="addDefinition(word.id)">add</button>
+      </div>
+    </article>
+  }
+
+  <table class="table table-sm table-bordered">
+    <tbody>
+      <tr>
+        <td>
+          <button class="btn btn-success" type="button" (click)="saveChanges()" [disabled]="saveState === 'saving'">
+            Save <span class="badge text-bg-light">{{ editCount }}</span>
+          </button>
+        </td>
+        <td>to delete: {{ deletedDefinitions.length }}</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <span class="badge" [ngClass]="{
+            'text-bg-info': saveState === 'idle' || saveState === 'saving',
+            'text-bg-success': saveState === 'success',
+            'text-bg-danger': saveState === 'error'
+          }">Status: {{ saveMessage }}</span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</section>

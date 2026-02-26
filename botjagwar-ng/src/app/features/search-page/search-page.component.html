@@ -19,7 +19,7 @@
         @for (word of words; track word.id) {
           <tr>
             <td>{{ word.id }}</td>
-            <td><a [href]="'/word.html?word=' + word.id">{{ word.word }}</a></td>
+            <td><a [routerLink]="'/word'" [queryParams]="{ word: word.id }">{{ word.word }}</a></td>
             <td>{{ word.part_of_speech }}</td>
             <td>
               <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
@@ -51,7 +51,7 @@
         @for (definition of definitions; track definition.id) {
           <tr>
             <td>{{ definition.id }}</td>
-            <td><a [href]="'/definition.html?defid=' + definition.id">{{ definition.definition }}</a></td>
+            <td><a [routerLink]="'/definition'" [queryParams]="{ defid: definition.id }">{{ definition.definition }}</a></td>
             <td>
               <a
                 [routerLink]="'/dictionary'"

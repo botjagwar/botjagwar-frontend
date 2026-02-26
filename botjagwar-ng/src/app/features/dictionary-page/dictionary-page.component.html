@@ -36,7 +36,7 @@
       @for (word of words; track word.id) {
         <tr>
           <td>{{ word.id }}</td>
-          <td><a [href]="'/word.html?word=' + word.id">{{ word.word }}</a></td>
+          <td><a [routerLink]="'/word'" [queryParams]="{ word: word.id }">{{ word.word }}</a></td>
           <td>{{ word.part_of_speech }}</td>
           <td>
             <a [routerLink]="'/dictionary'" [queryParams]="{ language: word.language }">
