@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
+import { DictionaryLanguageListItem } from '../models/dictionary-language-item.model';
 import { Language } from '../models/language.model';
 import { ApiClientService } from './api-client.service';
 
@@ -29,7 +30,7 @@ export class LanguageService {
     );
   }
 
-  getDictionaryLanguageList(): Observable<Array<string | { language: string; entries?: number }>> {
-    return this.api.get<Array<string | { language: string; entries?: number }>>('/dict/list');
+  getDictionaryLanguageList(): Observable<DictionaryLanguageListItem[]> {
+    return this.api.get<DictionaryLanguageListItem[]>('/dict/list');
   }
 }

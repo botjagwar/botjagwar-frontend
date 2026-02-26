@@ -19,17 +19,17 @@
       <tbody>
         @for (word of words; track word.en_definition_id + '-' + word.fr_definition_id) {
           <tr>
-            <td><a [href]="'word.html?term=' + word.word">{{ word.word }}</a></td>
+            <td><a [href]="getWordLink(word.word_id, word.word)">{{ word.word }}</a></td>
             <td>{{ word.language }}</td>
             <td>{{ word.part_of_speech }}</td>
             <td>
-              <a [href]="'definition.html?defid=' + word.en_definition_id">{{ word.en_definition }}</a>
+              <a [href]="'/definition.html?defid=' + word.en_definition_id">{{ word.en_definition }}</a>
             </td>
             <td>
-              <a [href]="'definition.html?defid=' + word.fr_definition_id">{{ word.fr_definition }}</a>
+              <a [href]="'/definition.html?defid=' + word.fr_definition_id">{{ word.fr_definition }}</a>
             </td>
             <td>
-              <a [href]="'definition.html?defid=' + word.mg_definition_id">{{ word.suggested_definition }}</a>
+              <a [href]="'/definition.html?defid=' + word.mg_definition_id">{{ word.suggested_definition }}</a>
             </td>
           </tr>
         }

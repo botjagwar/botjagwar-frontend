@@ -23,13 +23,13 @@
         @for (word of words; track word.w_id + '-' + word.w2) {
           <tr>
             <td>{{ word.w_id }}</td>
-            <td><a [href]="'word.html?term=' + word.w1">{{ word.w1 }}</a></td>
+            <td><a [href]="getWordLink(word.w1_id, word.w1)">{{ word.w1 }}</a></td>
             <td>{{ word.w1_pos }}</td>
             <td>{{ word.w1_lang }}</td>
-            <td><a [href]="'definition.html?id=' + word.w1_defn">{{ word.w1_defn }}</a></td>
+            <td><a [href]="getDefinitionLink(word.d_id, word.w1_defn)">{{ word.w1_defn }}</a></td>
             <td>{{ word.d_id }}</td>
             <td>{{ word.d_lang }}</td>
-            <td><a [href]="'word.html?term=' + word.w2">{{ word.w2 }}</a></td>
+            <td><a [href]="getWordLink(word.w2_id, word.w2)">{{ word.w2 }}</a></td>
             <td>{{ word.w2_pos }}</td>
           </tr>
         }

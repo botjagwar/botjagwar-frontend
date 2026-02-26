@@ -10,6 +10,8 @@ export interface InconsistentDefinitionReportRow {
   w_id: number;
   w1: string;
   w2: string;
+  w1_id?: number;
+  w2_id?: number;
   w1_pos?: string;
   w1_lang?: string;
   w1_defn?: string;
@@ -23,6 +25,7 @@ export interface ConvergentTranslationReportRow {
   fr_definition_id: number;
   suggested_definition: string;
   word?: string;
+  word_id?: number;
   language?: string;
   part_of_speech?: string;
   en_definition?: string;

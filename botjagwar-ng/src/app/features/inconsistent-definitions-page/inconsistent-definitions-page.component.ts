@@ -24,6 +24,16 @@ export class InconsistentDefinitionsPageComponent implements OnInit {
     private readonly languageService: LanguageService
   ) {}
 
+  getWordLink(wordId: number | undefined, fallbackTerm: string): string {
+    return wordId ? `/word.html?word=${wordId}` : `/word.html?term=${encodeURIComponent(fallbackTerm)}`;
+  }
+
+  getDefinitionLink(definitionId: number | undefined, fallbackDefinition: string | undefined): string {
+    return definitionId
+      ? `/definition.html?defid=${definitionId}`
+      : `/definition.html?defid=${encodeURIComponent(fallbackDefinition ?? '')}`;
+  }
+
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.language = params.get('language') ?? '';

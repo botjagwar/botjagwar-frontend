@@ -3,12 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
+import {
+  DictionaryLanguageItem,
+  normalizeDictionaryLanguageItem
+} from '../../core/models/dictionary-language-item.model';
 import { LanguageService } from '../../core/services/language.service';
-
-interface DictionaryLanguageItem {
-  language: string;
-  entries?: number;
-}
 
 @Component({
   selector: 'app-main-page',
@@ -28,9 +27,7 @@ export class MainPageComponent implements OnInit {
       dictionaryList: this.languageService.getDictionaryLanguageList(),
       languageMapping: this.languageService.getLanguageMapping()
     }).subscribe(({ dictionaryList, languageMapping }) => {
-      this.languages = dictionaryList.map((item) =>
-        typeof item === 'string' ? { language: item } : { language: item.language, entries: item.entries }
-      );
+      this.languages = dictionaryList.map(normalizeDictionaryLanguageItem);
       this.languageMapping = languageMapping;
       this.isLoading = false;
     });

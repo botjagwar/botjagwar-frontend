@@ -24,6 +24,12 @@ export class ConvergentTranslationsPageComponent implements OnInit {
     private readonly languageService: LanguageService
   ) {}
 
+  getWordLink(wordId: number | undefined, fallbackTerm: string | undefined): string {
+    return wordId
+      ? `/word.html?word=${wordId}`
+      : `/word.html?term=${encodeURIComponent(fallbackTerm ?? '')}`;
+  }
+
   ngOnInit(): void {
     this.route.queryParamMap.subscribe((params) => {
       this.language = params.get('language') ?? '';
