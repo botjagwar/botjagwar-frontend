@@ -49,4 +49,11 @@ describe('SearchPageComponent', () => {
     expect(component.definitions.length).toBe(1);
     expect(component.isLoading).toBe(false);
   });
+
+  it('keeps legacy API parity for empty term by still issuing search requests', () => {
+    queryParamMap$.next(convertToParamMap({}));
+
+    expect(dictionaryService.searchWords).toHaveBeenLastCalledWith('');
+    expect(dictionaryService.searchDefinitions).toHaveBeenLastCalledWith('');
+  });
 });
