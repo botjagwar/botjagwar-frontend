@@ -1,0 +1,39 @@
+<section>
+  <h1>{{ title }}</h1>
+  <p>Dictionary for {{ languageMapping[language] ?? language }}</p>
+
+  @if (isLoading) {
+    <p>Loading…</p>
+  } @else {
+    <table class="table table-sm table-bordered">
+      <thead>
+        <tr>
+          <th>w_id</th>
+          <th>w1</th>
+          <th>w1_pos</th>
+          <th>w1_lang</th>
+          <th>w1_defn</th>
+          <th>d_id</th>
+          <th>d_lang</th>
+          <th>w2</th>
+          <th>w2_pos</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (word of words; track word.w_id + '-' + word.w2) {
+          <tr>
+            <td>{{ word.w_id }}</td>
+            <td><a [href]="'word.html?term=' + word.w1">{{ word.w1 }}</a></td>
+            <td>{{ word.w1_pos }}</td>
+            <td>{{ word.w1_lang }}</td>
+            <td><a [href]="'definition.html?id=' + word.w1_defn">{{ word.w1_defn }}</a></td>
+            <td>{{ word.d_id }}</td>
+            <td>{{ word.d_lang }}</td>
+            <td><a [href]="'word.html?term=' + word.w2">{{ word.w2 }}</a></td>
+            <td>{{ word.w2_pos }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

@@ -1,0 +1,30 @@
+<section>
+  <h1>Language list</h1>
+
+  @if (isLoading) {
+    <p>Loading…</p>
+  } @else {
+    <p>
+      You will find the list of all languages currently in use in the local dictionary below.
+      Click on the language links for a dictionary in that language.
+    </p>
+
+    <div class="d-flex flex-wrap gap-3">
+      @for (language of languages; track language.language) {
+        <span>
+          <span class="badge text-bg-light me-2">
+            <a [routerLink]="'/dictionary'" [queryParams]="{ language: language.language }">
+              {{ language.language }}
+            </a>
+          </span>
+          <a [routerLink]="'/dictionary'" [queryParams]="{ language: language.language }">
+            {{ languageMapping[language.language] ?? language.language }}
+          </a>
+          @if (language.entries !== undefined) {
+            ({{ language.entries }})
+          }
+        </span>
+      }
+    </div>
+  }
+</section>

@@ -29,7 +29,7 @@ export class LanguageService {
     );
   }
 
-  getDictionaryLanguageList(): Observable<string[]> {
-    return this.api.get<string[]>('/dict/list');
+  getDictionaryLanguageList(): Observable<Array<string | { language: string; entries?: number }>> {
+    return this.api.get<Array<string | { language: string; entries?: number }>>('/dict/list');
   }
 }
