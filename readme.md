@@ -68,6 +68,13 @@ You can also delete and add definition as you see fit. Click on save to commit t
 ### Definitions
 Visualise a definition and see its uses in the database. Useful to perform fixes and visualise the impact of your change.
 
+## Angular migration rollout (Phase 5)
+
+- Angular SPA is served under `/ng/*` using Nginx static hosting from `ng-app/`.
+- Legacy static pages remain available at root paths during transition.
+- Root deep-link fallback to Angular is controlled by request header `X-Botjagwar-Spa: angular` to support canary rollout and rollback.
+- See `docs/angular/phase-5-compatibility-rollout.md` for rollout steps and deep-link verification matrix.
+
 ## Technical notes
 - The main Dictionary currently makes use of a materialized view that must currently be updated manually. You can add a cron task to do the job. 
 - The materialized view was to speed up the rendering on slow computers at the expense of not being totally synchronous and space (DB size increase 10x initial space usage). 
