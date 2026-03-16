@@ -24,7 +24,7 @@
   "packageManager": "npm@11.4.2",
   "dependencies": {
     "@angular/common": "^21.1.0",
-    "@angular/compiler": "^21.1.0",
+    "@angular/compiler": "^21.2.4",
     "@angular/core": "^21.2.4",
     "@angular/forms": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
@@ -36,7 +36,7 @@
   "devDependencies": {
     "@angular/build": "^21.1.5",
     "@angular/cli": "^21.1.5",
-    "@angular/compiler-cli": "^21.1.0",
+    "@angular/compiler-cli": "^21.2.4",
     "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
