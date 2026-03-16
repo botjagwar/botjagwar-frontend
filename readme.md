@@ -1,6 +1,6 @@
 This is a web frontend for botjagwar application.
 
-The frontend Web application makes use of Bootstrap 4, Datatables, VueJS, and Nginx.
+The frontend Web application makes use of Angular and Nginx.
 With PostgreSQL backend, PostgREST is used to lessen the load on `dictionary_service` for read operations. Nginx acts as a proxy which redirect requests to either `dictionary_service` or PostgREST APIs.
 
 The backend code including `dictionary_service` and all scripts are stored at [botjagwar](https://github.com/radomd92/botjagwar).
@@ -11,7 +11,7 @@ This repository contains the following things:
 - Nginx configuration for frontend;
 - PostgREST configuration for backend;
 - PostgreSQL views for some complex data representation for use by PostgREST;
-- Static pages for the application, one page per feature (as of current)
+- Angular frontend application source code and build/deploy scripts
 
 
 ## Requirements
@@ -86,4 +86,3 @@ Consequences:
 ## Authors
 
 - Rado Andrianjanahary
-
